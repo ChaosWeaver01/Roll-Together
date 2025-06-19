@@ -6,6 +6,7 @@ export function rollD10(): number {
 }
 
 function rollSingleGenericDie(sides: number): number {
+  if (sides <= 0) return 1; // Safety for invalid die types, though UI should prevent this
   return Math.floor(Math.random() * sides) + 1;
 }
 
@@ -36,20 +37,14 @@ export function performSkillRoll(diceCount: number): SkillDieRoll[] {
   return results;
 }
 
-export function performGenericRoll(diceRequests: Array<{ dieType: string; count: number }>): GenericDieRoll[] {
-  const results: GenericDieRoll[] = [];
-  diceRequests.forEach(req => {
-    const sides = parseInt(req.dieType.substring(1), 10);
-    if (isNaN(sides) || sides <= 0) return; // Skip invalid die types
-
-    for (let i = 0; i < req.count; i++) {
-      results.push({
-        dieType: req.dieType,
-        value: rollSingleGenericDie(sides),
-      });
-    }
+export function performGenericRoll(selectedDice: string[]): GenericDieRoll[] {
+  return selectedDice.map(dieType => {
+    const sides = parseInt(dieType.substring(1), 10);
+    return {
+      dieType,
+      value: rollSingleGenericDie(sides),
+    };
   });
-  return results;
 }
 
 
@@ -92,6 +87,7 @@ export function calculateSkillRollTotal(roll: SkillRoll): { total: number; contr
     const powerDieEntries = results
       .map((die, index) => ({ ...die, originalIndex: index }))
       .filter(d => d.isPowerDie);
+    
     const nonPowerDieEntries = results
       .map((die, index) => ({ ...die, originalIndex: index }))
       .filter(d => !d.isPowerDie);
@@ -114,7 +110,7 @@ export function calculateSkillRollTotal(roll: SkillRoll): { total: number; contr
       currentTotal += lowestNonPowerDie.value;
       currentContributingDiceIndices.push(lowestNonPowerDie.originalIndex);
       
-      if (sortedNonPowerDice.length > 1) {
+      if (sortedNonPowerDice.length > 1) { // Check if there's a highest distinct from lowest
         const highestNonPowerDie = sortedNonPowerDice[sortedNonPowerDice.length - 1];
         currentTotal += highestNonPowerDie.value;
         currentContributingDiceIndices.push(highestNonPowerDie.originalIndex);
@@ -156,13 +152,14 @@ export function calculateSkillRollTotal(roll: SkillRoll): { total: number; contr
       
       total = powerDie.value + lowestOtherDieValue + modifier;
       contributingDiceIndices = [0, lowestOtherDieOriginalIndex];
-    } else {
+    } else { // Should not happen with current logic, but as fallback
       total = results.reduce((sum, die) => sum + die.value, 0) + modifier;
       contributingDiceIndices = results.map((_, index) => index);
     }
     return { total, contributingDiceIndices };
   }
 
+  // diceCount >= 2 (and not trueCritical non-combat)
   let highestPowerDieValue = -Infinity;
   let highestPowerDieIndex = -1;
   let highestNonPowerDieValue = -Infinity;
@@ -195,7 +192,7 @@ export function calculateSkillRollTotal(roll: SkillRoll): { total: number; contr
 
   total = sumOfDice + modifier;
   
-  if (results.length === 0) {
+  if (results.length === 0) { // Should not happen if diceCount > 0
     total = modifier;
     contributingDiceIndices = [];
   }
@@ -219,21 +216,10 @@ export function calculateRollDisplayInfo(roll: Roll): RollDisplayInfo {
     const genericRoll = roll as GenericRoll;
     const total = genericRoll.results.reduce((sum, die) => sum + die.value, 0) + genericRoll.modifier;
     
-    const diceRequestString = genericRoll.diceRequests
-      .filter(req => req.count > 0)
-      .map(req => `${req.count}${req.dieType}`)
-      .join(', ');
+    const diceRequestString = genericRoll.selectedDice.join(', ');
 
-    const resultsByDieType: Record<string, number[]> = {};
-    genericRoll.results.forEach(result => {
-      if (!resultsByDieType[result.dieType]) {
-        resultsByDieType[result.dieType] = [];
-      }
-      resultsByDieType[result.dieType].push(result.value);
-    });
-
-    const individualResultsString = Object.entries(resultsByDieType)
-      .map(([dieType, values]) => `${dieType}: ${values.join(', ')}`)
+    const individualResultsString = genericRoll.results
+      .map(result => `${result.dieType}(${result.value})`)
       .join('; ');
       
     return { total, diceRequestString, individualResultsString };

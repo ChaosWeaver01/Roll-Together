@@ -82,7 +82,7 @@ export function RoomClient({ roomId }: RoomClientProps) {
     addRoll(newRoll);
   }, [roomId, addRoll, currentNickname, toast]);
 
-  const handleGenericRoll = useCallback((diceRequests: Array<{ dieType: string; count: number }>, modifier: number) => {
+  const handleGenericRoll = useCallback((selectedDice: string[], modifier: number) => {
     const nicknameToUse = currentNickname.trim() || `Player${generateId().substring(0,4)}`;
      if (!nicknameToUse.trim()) {
       toast({
@@ -93,7 +93,7 @@ export function RoomClient({ roomId }: RoomClientProps) {
       return;
     }
     
-    const results: GenericDieRoll[] = performGenericRoll(diceRequests);
+    const results: GenericDieRoll[] = performGenericRoll(selectedDice);
     
     const newRoll: GenericRoll = {
       id: generateId(),
@@ -101,7 +101,7 @@ export function RoomClient({ roomId }: RoomClientProps) {
       roomId,
       rollerNickname: nicknameToUse,
       timestamp: Date.now(),
-      diceRequests,
+      selectedDice,
       modifier,
       results,
       totalDiceRolled: results.length,

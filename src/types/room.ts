@@ -36,9 +36,9 @@ export interface SkillRoll extends BaseRoll {
 
 export interface GenericRoll extends BaseRoll {
   rollType: 'generic';
-  diceRequests: Array<{ dieType: string; count: number }>;
-  results: GenericDieRoll[];
-  totalDiceRolled: number; // Count of GenericDieRoll in results
+  selectedDice: string[]; // Ordered list of dice selected by the user, e.g., ['d6', 'd20', 'd6']
+  results: GenericDieRoll[]; // Results corresponding to each die in selectedDice
+  totalDiceRolled: number; // Count of GenericDieRoll in results, should equal selectedDice.length
 }
 
 export type Roll = SkillRoll | GenericRoll;

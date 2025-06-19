@@ -1,52 +1,50 @@
 
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Dices, Plus, Minus, RotateCcw } from 'lucide-react';
+import { Dices, Plus, RotateCcw, Trash2, Undo2 } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
+import { Badge } from '@/components/ui/badge';
 
 interface GenericDiceRollerProps {
-  onRoll: (diceRequests: Array<{ dieType: string; count: number }>, modifier: number) => void;
+  onRoll: (selectedDice: string[], modifier: number) => void;
 }
 
 const DIE_TYPES = ["d4", "d6", "d8", "d10", "d12", "d20", "d100"] as const;
 type DieType = typeof DIE_TYPES[number];
 
 export function GenericDiceRoller({ onRoll }: GenericDiceRollerProps) {
-  const [diceQuantities, setDiceQuantities] = useState<Record<DieType, number>>(
-    DIE_TYPES.reduce((acc, type) => ({ ...acc, [type]: 0 }), {} as Record<DieType, number>)
-  );
+  const [selectedDice, setSelectedDice] = useState<string[]>([]);
   const [modifier, setModifier] = useState(0);
   const { toast } = useToast();
 
-  const handleQuantityChange = (dieType: DieType, value: string) => {
-    const count = parseInt(value, 10);
-    if (!isNaN(count) && count >= 0 && count <= 99) { // Limit count to 99
-      setDiceQuantities(prev => ({ ...prev, [dieType]: count }));
-    } else if (value === "") {
-      setDiceQuantities(prev => ({ ...prev, [dieType]: 0}));
+  const handleAddDie = (dieType: DieType) => {
+    if (selectedDice.length < 50) { // Limit total dice selected
+        setSelectedDice(prev => [...prev, dieType]);
+    } else {
+        toast({
+            title: "Dice Limit Reached",
+            description: "You can select a maximum of 50 dice per roll.",
+            variant: "destructive",
+        });
     }
   };
-  
-  const incrementDie = (dieType: DieType) => {
-    setDiceQuantities(prev => ({ ...prev, [dieType]: Math.min((prev[dieType] || 0) + 1, 99) }));
+
+  const handleClearLastDie = () => {
+    setSelectedDice(prev => prev.slice(0, -1));
   };
 
-  const decrementDie = (dieType: DieType) => {
-    setDiceQuantities(prev => ({ ...prev, [dieType]: Math.max((prev[dieType] || 0) - 1, 0) }));
+  const handleResetSelection = () => {
+    setSelectedDice([]);
+    setModifier(0);
   };
 
   const handleRoll = () => {
-    const diceRequests = DIE_TYPES.map(dieType => ({
-      dieType,
-      count: diceQuantities[dieType] || 0,
-    })).filter(req => req.count > 0);
-
-    if (diceRequests.length === 0) {
+    if (selectedDice.length === 0) {
       toast({
         title: "No Dice Selected",
         description: "Please select at least one die to roll.",
@@ -54,14 +52,8 @@ export function GenericDiceRoller({ onRoll }: GenericDiceRollerProps) {
       });
       return;
     }
-    onRoll(diceRequests, modifier);
+    onRoll(selectedDice, modifier);
   };
-  
-  const clearAllDice = () => {
-    setDiceQuantities(DIE_TYPES.reduce((acc, type) => ({ ...acc, [type]: 0 }), {} as Record<DieType, number>));
-    setModifier(0);
-  };
-
 
   return (
     <Card className="w-full shadow-lg">
@@ -71,37 +63,52 @@ export function GenericDiceRoller({ onRoll }: GenericDiceRollerProps) {
             <Dices className="w-6 h-6 mr-2 text-primary" />
             Generic Roller
           </div>
-          <Button variant="ghost" size="sm" onClick={clearAllDice} aria-label="Clear all dice and modifier">
-            <RotateCcw className="w-4 h-4 mr-1" /> Clear
+          <Button variant="ghost" size="sm" onClick={handleResetSelection} aria-label="Reset selection and modifier">
+            <RotateCcw className="w-4 h-4 mr-1" /> Reset
           </Button>
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-6">
-        <div className="grid grid-cols-1 gap-y-4 gap-x-2">
-          {DIE_TYPES.map(dieType => (
-            <div key={dieType} className="space-y-1">
-              <Label htmlFor={`dice-${dieType}`} className="text-muted-foreground uppercase font-mono text-xs">
+        <div>
+          <Label className="text-muted-foreground uppercase font-mono text-xs mb-2 block">
+            Click to add dice
+          </Label>
+          <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 mb-4">
+            {DIE_TYPES.map(dieType => (
+              <Button
+                key={dieType}
+                variant="outline"
+                onClick={() => handleAddDie(dieType)}
+                className="font-mono"
+                aria-label={`Add ${dieType} to selection`}
+              >
                 {dieType}
-              </Label>
-              <div className="flex items-center space-x-2">
-                <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => decrementDie(dieType)} aria-label={`Decrement ${dieType} count`}>
-                  <Minus className="h-4 w-4" />
+              </Button>
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <div className="flex justify-between items-center mb-1">
+            <Label className="text-muted-foreground uppercase font-mono text-xs">
+              Selected Dice ({selectedDice.length})
+            </Label>
+            {selectedDice.length > 0 && (
+                 <Button variant="outline" size="sm" onClick={handleClearLastDie} aria-label="Clear last die" className="h-7 px-2">
+                    <Undo2 className="w-3 h-3 mr-1" /> Clear Last
                 </Button>
-                <Input
-                  id={`dice-${dieType}`}
-                  type="number"
-                  value={diceQuantities[dieType]?.toString() || "0"}
-                  onChange={(e) => handleQuantityChange(dieType, e.target.value)}
-                  min="0"
-                  max="99"
-                  className="bg-input placeholder:text-muted-foreground w-16 text-center appearance-none [-moz-appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                />
-                <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => incrementDie(dieType)} aria-label={`Increment ${dieType} count`}>
-                  <Plus className="h-4 w-4" />
-                </Button>
-              </div>
-            </div>
-          ))}
+            )}
+          </div>
+          <div className="min-h-[60px] bg-input p-2 rounded-md flex flex-wrap gap-1 items-start">
+            {selectedDice.length === 0 && (
+              <span className="text-sm text-muted-foreground italic p-2">No dice selected</span>
+            )}
+            {selectedDice.map((die, index) => (
+              <Badge key={index} variant="secondary" className="font-mono text-xs">
+                {die}
+              </Badge>
+            ))}
+          </div>
         </div>
         
         <div className="space-y-2">
@@ -120,7 +127,7 @@ export function GenericDiceRoller({ onRoll }: GenericDiceRollerProps) {
         <Button
           onClick={handleRoll}
           className="w-full bg-primary hover:bg-primary/90 text-primary-foreground text-lg py-6 rounded-lg shadow-lg transition-transform hover:scale-105"
-          aria-label="Roll generic dice"
+          aria-label="Roll selected generic dice"
         >
           <Dices className="mr-2 h-6 w-6" />
           Roll Generic Dice
