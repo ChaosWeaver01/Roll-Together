@@ -56,7 +56,13 @@ export function RoomClient({ roomId }: RoomClientProps) {
           setIsRightPanelOpen(rightOpen !== undefined ? rightOpen : false);
         } catch (e) {
           console.error("Failed to parse panel states from localStorage", e);
+          setIsLeftPanelOpen(false); // Default to closed on error
+          setIsRightPanelOpen(false); // Default to closed on error
         }
+      } else {
+        // Default to closed if no stored state
+        setIsLeftPanelOpen(false);
+        setIsRightPanelOpen(false);
       }
 
       // Load macros
@@ -260,6 +266,11 @@ export function RoomClient({ roomId }: RoomClientProps) {
             <Button variant="ghost" size="icon" onClick={() => setIsLeftPanelOpen(!isLeftPanelOpen)} aria-label={isLeftPanelOpen ? "Collapse Left Panel" : "Expand Left Panel"}>
               <PanelLeft className="h-5 w-5" />
             </Button>
+            <Button variant="ghost" asChild size="sm">
+              <Link href="/" aria-label="Back to Home">
+                <Home className="w-4 h-4 mr-2" /> Home
+              </Link>
+            </Button>
             <h1 className="font-headline text-xl sm:text-2xl text-primary whitespace-nowrap">
               Room: <span className="text-accent font-code">{roomId}</span>
             </h1>
@@ -297,11 +308,6 @@ export function RoomClient({ roomId }: RoomClientProps) {
                 </a>
               </Button>
             )}
-            <Button variant="ghost" asChild size="sm">
-              <Link href="/" aria-label="Back to Home">
-                <Home className="w-4 h-4 mr-2" /> Home
-              </Link>
-            </Button>
              <Button variant="ghost" size="icon" onClick={() => setIsRightPanelOpen(!isRightPanelOpen)} aria-label={isRightPanelOpen ? "Collapse Right Panel" : "Expand Right Panel"}>
               <PanelRight className="h-5 w-5" />
             </Button>
