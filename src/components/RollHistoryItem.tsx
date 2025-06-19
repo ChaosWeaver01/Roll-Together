@@ -2,7 +2,7 @@
 import type { Roll, RollOutcomeState, SkillRoll, GenericRoll } from '@/types/room';
 import { Dice } from '@/components/Dice';
 import { formatDistanceToNow } from 'date-fns';
-import { User, BarChart3, AlertTriangle, Zap, ShieldAlert, Award, Sparkles, Swords, Dice1, Dices } from 'lucide-react';
+import { User, BarChart3, AlertTriangle, Zap, ShieldAlert, Award, Sparkles, Swords, Dices } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { calculateRollDisplayInfo, RollDisplayInfo } from '@/lib/diceRoller';
 
@@ -15,11 +15,11 @@ const getOutcomeStyles = (outcome: RollOutcomeState): string => {
     case 'botch':
       return 'text-destructive font-bold'; // Uses theme's destructive color
     case 'failure':
-      return 'text-orange-700 font-semibold'; // Dark orange/rust, good contrast on parchment
+      return 'text-orange-700 font-semibold';
     case 'critical':
-      return 'text-green-700 font-bold'; // Deep forest green
+      return 'text-green-800 font-bold';
     case 'trueCritical':
-      return 'text-amber-700 font-extrabold animate-pulse'; // Dark, rich amber/gold
+      return 'text-amber-700 font-extrabold animate-pulse';
     default:
       return 'text-foreground';
   }
@@ -32,7 +32,7 @@ const OutcomeIcon = ({ outcome }: { outcome: RollOutcomeState }) => {
     case 'failure':
       return <AlertTriangle className="w-4 h-4 mr-1.5 text-orange-700" />;
     case 'critical':
-      return <Award className="w-4 h-4 mr-1.5 text-green-700" />;
+      return <Award className="w-4 h-4 mr-1.5 text-green-800" />;
     case 'trueCritical':
       return <Sparkles className="w-4 h-4 mr-1.5 text-amber-700" />;
     default:
@@ -65,11 +65,29 @@ export function RollHistoryItem({ roll }: RollHistoryItemProps) {
   return (
     <li className="bg-card p-4 rounded-lg shadow-md border border-border animate-new-roll-entry">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-3">
-        <div className="flex items-center mb-2 sm:mb-0">
-          <User className="w-5 h-5 mr-2 text-primary" />
-          <span className="font-semibold text-lg text-primary">{roll.rollerNickname || 'Anonymous'}</span>
+        {/* Left part: Nickname and Outcome */}
+        <div className="flex flex-wrap items-center gap-x-3 mb-2 sm:mb-0">
+          {/* Nickname */}
+          <div className="flex items-center">
+            <User className="w-5 h-5 mr-2 text-primary" />
+            <span className="font-semibold text-lg text-primary">{roll.rollerNickname || 'Anonymous'}</span>
+          </div>
+
+          {/* Outcome (only for SkillRoll) */}
+          {roll.rollType === 'skill' && (
+            <div className={cn(
+              "flex items-center text-lg",
+              getOutcomeStyles((roll as SkillRoll).rollOutcomeState)
+            )}>
+              <OutcomeIcon outcome={(roll as SkillRoll).rollOutcomeState} />
+              <span>{formatOutcomeText((roll as SkillRoll).rollOutcomeState, (roll as SkillRoll).isCombatRoll)}</span>
+              {(roll as SkillRoll).isCombatRoll && <Swords className="w-4 h-4 ml-1.5 text-destructive" />}
+            </div>
+          )}
         </div>
-        <div className="flex items-baseline gap-x-2 sm:gap-x-3">
+
+        {/* Right part: Timestamp */}
+        <div className="flex items-baseline">
           <span className="text-xs text-muted-foreground">{timeAgo}</span>
         </div>
       </div>
@@ -78,12 +96,8 @@ export function RollHistoryItem({ roll }: RollHistoryItemProps) {
         const skillRoll = roll as SkillRoll;
         return (
           <>
-            <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-2 mb-3">
-              <div className={cn("flex items-center text-lg", getOutcomeStyles(skillRoll.rollOutcomeState))}>
-                <OutcomeIcon outcome={skillRoll.rollOutcomeState} />
-                <span>{formatOutcomeText(skillRoll.rollOutcomeState, skillRoll.isCombatRoll)}</span>
-                {skillRoll.isCombatRoll && <Swords className="w-4 h-4 ml-2 text-destructive" />}
-              </div>
+            {/* Details like "Dice Rolled" and "Crit On" */}
+            <div className="flex flex-wrap items-baseline justify-end gap-x-4 gap-y-2 mb-3">
               <div className="flex flex-wrap gap-x-3 gap-y-1 text-sm text-muted-foreground items-baseline">
                 <div className="flex items-center bg-background/50 px-2 py-1 rounded">
                   <BarChart3 className="w-3.5 h-3.5 mr-1.5" />
@@ -95,6 +109,8 @@ export function RollHistoryItem({ roll }: RollHistoryItemProps) {
                 </div>
               </div>
             </div>
+            
+            {/* Dice rendering */}
             <div className="flex flex-wrap items-center gap-2 mt-3">
               {skillRoll.results.map((dieRoll, index) => (
                 <Dice
@@ -142,12 +158,12 @@ export function RollHistoryItem({ roll }: RollHistoryItemProps) {
             </div>
             <div className="flex flex-wrap items-center gap-2 mt-3">
               {genericRoll.results.map((dieRoll, index) => (
-                <div
+                 <div
                   key={index}
-                  className="relative flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 border-2 border-muted-foreground rounded-lg text-sm sm:text-base font-bold shadow-md bg-card text-foreground"
+                  className="flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 border-2 border-muted-foreground rounded-lg text-sm sm:text-base font-bold shadow-md bg-card text-foreground"
                   aria-label={`${dieRoll.dieType}: ${dieRoll.value}`}
                 >
-
+                  {/* Removed die type from top corner */}
                   {dieRoll.value}
                 </div>
               ))}
@@ -171,3 +187,5 @@ export function RollHistoryItem({ roll }: RollHistoryItemProps) {
     </li>
   );
 }
+
+    
