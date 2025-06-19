@@ -13,7 +13,7 @@ interface RollHistoryItemProps {
 const getOutcomeStyles = (outcome: RollOutcomeState): string => {
   switch (outcome) {
     case 'botch':
-      return 'text-destructive font-bold'; // Uses theme's destructive color
+      return 'text-destructive font-bold';
     case 'failure':
       return 'text-orange-700 font-semibold';
     case 'critical':
@@ -64,64 +64,56 @@ export function RollHistoryItem({ roll }: RollHistoryItemProps) {
 
   return (
     <li className="bg-card p-4 rounded-lg shadow-md border border-border animate-new-roll-entry">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-3">
-        {/* Left part: Nickname and Outcome */}
-        <div className="flex flex-wrap items-center gap-x-3 mb-2 sm:mb-0">
-          {/* Nickname */}
+      {/* Conditional Header Section */}
+      {roll.rollType === 'skill' ? (
+        // New Consolidated Header for Skill Rolls
+        <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1 mb-3">
           <div className="flex items-center">
             <User className="w-5 h-5 mr-2 text-primary" />
             <span className="font-semibold text-lg text-primary">{roll.rollerNickname || 'Anonymous'}</span>
           </div>
-
-          {/* Outcome (only for SkillRoll) */}
-          {roll.rollType === 'skill' && (
-            <div className={cn(
-              "flex items-center text-lg",
-              getOutcomeStyles((roll as SkillRoll).rollOutcomeState)
-            )}>
-              <OutcomeIcon outcome={(roll as SkillRoll).rollOutcomeState} />
-              <span>{formatOutcomeText((roll as SkillRoll).rollOutcomeState, (roll as SkillRoll).isCombatRoll)}</span>
-              {(roll as SkillRoll).isCombatRoll && <Swords className="w-4 h-4 ml-1.5 text-destructive" />}
+          <div className={cn(
+            "flex items-center text-lg",
+            getOutcomeStyles((roll as SkillRoll).rollOutcomeState)
+          )}>
+            <OutcomeIcon outcome={(roll as SkillRoll).rollOutcomeState} />
+            <span>{formatOutcomeText((roll as SkillRoll).rollOutcomeState, (roll as SkillRoll).isCombatRoll)}</span>
+            {(roll as SkillRoll).isCombatRoll && <Swords className="w-4 h-4 ml-1.5 text-destructive" />}
+          </div>
+          <div className="flex items-center text-sm text-muted-foreground bg-background/50 px-2 py-1 rounded">
+            <BarChart3 className="w-3.5 h-3.5 mr-1.5" />
+            <span>Dice Rolled: {(roll as SkillRoll).totalDiceRolled}</span>
+          </div>
+          <div className="flex items-center text-sm text-muted-foreground bg-background/50 px-2 py-1 rounded">
+            <Zap className="w-3.5 h-3.5 mr-1.5" />
+            <span>Crit On: {(roll as SkillRoll).criticalThreshold}+</span>
+          </div>
+          <span className="text-xs text-muted-foreground">{timeAgo}</span>
+        </div>
+      ) : (
+        // Existing Header for Generic Rolls
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-3">
+          <div className="flex flex-wrap items-center gap-x-3 mb-2 sm:mb-0">
+            <div className="flex items-center">
+              <User className="w-5 h-5 mr-2 text-primary" />
+              <span className="font-semibold text-lg text-primary">{roll.rollerNickname || 'Anonymous'}</span>
             </div>
-          )}
-           {/* For GenericRoll - display "Generic Roll" text in header */}
-           {roll.rollType === 'generic' && (
-             <div className="flex items-center text-lg text-foreground">
+            <div className="flex items-center text-lg text-foreground">
                 <Dices className="w-4 h-4 mr-1.5 text-primary" />
                 <span>Generic Roll</span>
             </div>
-          )}
+          </div>
+          <div className="flex items-baseline">
+              <span className="text-xs text-muted-foreground">{timeAgo}</span>
+          </div>
         </div>
+      )}
 
-        {/* Right part: Timestamp (Only for Generic Rolls in this top header section) */}
-        {roll.rollType === 'generic' && (
-            <div className="flex items-baseline">
-                <span className="text-xs text-muted-foreground">{timeAgo}</span>
-            </div>
-        )}
-      </div>
-
+      {/* Dice Rendering and Details Section */}
       {roll.rollType === 'skill' && (() => {
         const skillRoll = roll as SkillRoll;
         return (
           <>
-            {/* Details like "Dice Rolled", "Crit On", and Timestamp */}
-            <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-2 mb-3">
-              <div className="flex flex-wrap gap-x-3 gap-y-1 text-sm text-muted-foreground items-baseline">
-                <div className="flex items-center bg-background/50 px-2 py-1 rounded">
-                  <BarChart3 className="w-3.5 h-3.5 mr-1.5" />
-                  <span>Dice Rolled: {skillRoll.totalDiceRolled}</span>
-                </div>
-                <div className="flex items-center bg-background/50 px-2 py-1 rounded">
-                  <Zap className="w-3.5 h-3.5 mr-1.5" />
-                  <span>Crit On: {skillRoll.criticalThreshold}+</span>
-                </div>
-              </div>
-              <div className="flex items-baseline">
-                <span className="text-xs text-muted-foreground">{timeAgo}</span>
-              </div>
-            </div>
-            
             {/* Dice rendering */}
             <div className="flex flex-wrap items-center gap-2 mt-3">
               {skillRoll.results.map((dieRoll, index) => (
@@ -153,7 +145,7 @@ export function RollHistoryItem({ roll }: RollHistoryItemProps) {
         const genericRoll = roll as GenericRoll;
         return (
           <>
-            <div className="flex flex-wrap items-baseline justify-start gap-x-4 gap-y-2 mb-3"> {/* Changed to justify-start as timestamp is in header */}
+            <div className="flex flex-wrap items-baseline justify-start gap-x-4 gap-y-2 mb-3">
               <div className="flex flex-wrap gap-x-3 gap-y-1 text-sm text-muted-foreground items-baseline">
                 <div className="flex items-center bg-background/50 px-2 py-1 rounded">
                   <BarChart3 className="w-3.5 h-3.5 mr-1.5" />
@@ -194,4 +186,3 @@ export function RollHistoryItem({ roll }: RollHistoryItemProps) {
     </li>
   );
 }
-
