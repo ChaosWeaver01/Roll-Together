@@ -84,20 +84,29 @@ export function RollHistoryItem({ roll }: RollHistoryItemProps) {
               {(roll as SkillRoll).isCombatRoll && <Swords className="w-4 h-4 ml-1.5 text-destructive" />}
             </div>
           )}
+           {/* For GenericRoll - display "Generic Roll" text in header */}
+           {roll.rollType === 'generic' && (
+             <div className="flex items-center text-lg text-foreground">
+                <Dices className="w-4 h-4 mr-1.5 text-primary" />
+                <span>Generic Roll</span>
+            </div>
+          )}
         </div>
 
-        {/* Right part: Timestamp */}
-        <div className="flex items-baseline">
-          <span className="text-xs text-muted-foreground">{timeAgo}</span>
-        </div>
+        {/* Right part: Timestamp (Only for Generic Rolls in this top header section) */}
+        {roll.rollType === 'generic' && (
+            <div className="flex items-baseline">
+                <span className="text-xs text-muted-foreground">{timeAgo}</span>
+            </div>
+        )}
       </div>
 
       {roll.rollType === 'skill' && (() => {
         const skillRoll = roll as SkillRoll;
         return (
           <>
-            {/* Details like "Dice Rolled" and "Crit On" */}
-            <div className="flex flex-wrap items-baseline justify-end gap-x-4 gap-y-2 mb-3">
+            {/* Details like "Dice Rolled", "Crit On", and Timestamp */}
+            <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-2 mb-3">
               <div className="flex flex-wrap gap-x-3 gap-y-1 text-sm text-muted-foreground items-baseline">
                 <div className="flex items-center bg-background/50 px-2 py-1 rounded">
                   <BarChart3 className="w-3.5 h-3.5 mr-1.5" />
@@ -107,6 +116,9 @@ export function RollHistoryItem({ roll }: RollHistoryItemProps) {
                   <Zap className="w-3.5 h-3.5 mr-1.5" />
                   <span>Crit On: {skillRoll.criticalThreshold}+</span>
                 </div>
+              </div>
+              <div className="flex items-baseline">
+                <span className="text-xs text-muted-foreground">{timeAgo}</span>
               </div>
             </div>
             
@@ -141,11 +153,7 @@ export function RollHistoryItem({ roll }: RollHistoryItemProps) {
         const genericRoll = roll as GenericRoll;
         return (
           <>
-            <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-2 mb-3">
-               <div className="flex items-center text-lg text-foreground">
-                <Dices className="w-4 h-4 mr-1.5 text-primary" />
-                <span>Generic Roll</span>
-              </div>
+            <div className="flex flex-wrap items-baseline justify-start gap-x-4 gap-y-2 mb-3"> {/* Changed to justify-start as timestamp is in header */}
               <div className="flex flex-wrap gap-x-3 gap-y-1 text-sm text-muted-foreground items-baseline">
                 <div className="flex items-center bg-background/50 px-2 py-1 rounded">
                   <BarChart3 className="w-3.5 h-3.5 mr-1.5" />
@@ -163,7 +171,6 @@ export function RollHistoryItem({ roll }: RollHistoryItemProps) {
                   className="flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 border-2 border-muted-foreground rounded-lg text-sm sm:text-base font-bold shadow-md bg-card text-foreground"
                   aria-label={`${dieRoll.dieType}: ${dieRoll.value}`}
                 >
-                  {/* Removed die type from top corner */}
                   {dieRoll.value}
                 </div>
               ))}
@@ -188,4 +195,3 @@ export function RollHistoryItem({ roll }: RollHistoryItemProps) {
   );
 }
 
-    
