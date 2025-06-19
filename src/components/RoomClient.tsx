@@ -13,6 +13,7 @@ import { performSkillRoll, performGenericRoll, determineRollOutcome } from '@/li
 import { generateId, cn } from '@/lib/utils';
 import type { Roll, SkillRoll, GenericRoll, SkillDieRoll, GenericDieRoll } from '@/types/room';
 import { useToast } from "@/hooks/use-toast";
+import { useRoomSync } from '@/hooks/useRoomSync'; // Added import
 import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
@@ -30,7 +31,7 @@ export function RoomClient({ roomId }: RoomClientProps) {
   const [roomUrl, setRoomUrl] = useState('');
 
   const [isLeftPanelOpen, setIsLeftPanelOpen] = useState(true);
-  const [isRightPanelOpen, setIsRightPanelOpen] = useState(false); // Default right panel to closed
+  const [isRightPanelOpen, setIsRightPanelOpen] = useState(false); 
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
