@@ -1,7 +1,10 @@
+
 export interface DieRoll {
   value: number;
   isPowerDie: boolean;
 }
+
+export type RollOutcomeState = 'normal' | 'botch' | 'failure' | 'critical' | 'trueCritical';
 
 export interface Roll {
   id: string;
@@ -12,6 +15,8 @@ export interface Roll {
   modifier: number;
   results: DieRoll[];
   totalDiceRolled: number;
+  criticalThreshold: number;
+  rollOutcomeState: RollOutcomeState;
 }
 
 export interface Player {

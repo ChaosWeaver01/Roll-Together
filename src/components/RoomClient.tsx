@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect, useCallback } from 'react';
@@ -6,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { useRoomSync } from '@/hooks/useRoomSync';
 import { PlayerInput } from '@/components/PlayerInput';
 import { RollHistory } from '@/components/RollHistory';
-import { performRoll } from '@/lib/diceRoller';
+import { performRoll, determineRollOutcome } from '@/lib/diceRoller';
 import { generateId } from '@/lib/utils';
 import type { Roll } from '@/types/room';
 import { useToast } from "@/hooks/use-toast";
@@ -30,8 +31,10 @@ export function RoomClient({ roomId }: RoomClientProps) {
     }
   }, []);
 
-  const handleRoll = useCallback((nickname: string, skillRank: number, modifier: number) => {
+  const handleRoll = useCallback((nickname: string, skillRank: number, modifier: number, criticalThreshold: number) => {
     const results = performRoll(skillRank, modifier);
+    const rollOutcomeState = determineRollOutcome(results, criticalThreshold);
+    
     const newRoll: Roll = {
       id: generateId(),
       roomId,
@@ -41,9 +44,11 @@ export function RoomClient({ roomId }: RoomClientProps) {
       modifier,
       results,
       totalDiceRolled: results.length,
+      criticalThreshold,
+      rollOutcomeState,
     };
     addRoll(newRoll);
-    localStorage.setItem('rt-nickname', nickname); // Persist nickname
+    localStorage.setItem('rt-nickname', nickname); 
   }, [roomId, addRoll]);
 
   const copyRoomUrl = () => {

@@ -6,18 +6,19 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Dices, User, TrendingUp, Plus } from 'lucide-react';
+import { Dices, User, TrendingUp, Plus, Zap } from 'lucide-react'; // Zap for Critical Threshold
 import { useToast } from "@/hooks/use-toast";
 
 interface PlayerInputProps {
   initialNickname: string;
-  onRoll: (nickname: string, skillRank: number, modifier: number) => void;
+  onRoll: (nickname: string, skillRank: number, modifier: number, criticalThreshold: number) => void;
 }
 
 export function PlayerInput({ initialNickname, onRoll }: PlayerInputProps) {
   const [nickname, setNickname] = useState(initialNickname);
   const [skillRank, setSkillRank] = useState(0);
   const [modifier, setModifier] = useState(0);
+  const [criticalThreshold, setCriticalThreshold] = useState(9); // Default critical threshold
   const { toast } = useToast();
 
   useEffect(() => {
@@ -33,7 +34,15 @@ export function PlayerInput({ initialNickname, onRoll }: PlayerInputProps) {
       });
       return;
     }
-    onRoll(nickname, skillRank, modifier);
+    if (criticalThreshold < 1 || criticalThreshold > 10) {
+       toast({
+        title: "Invalid Critical Threshold",
+        description: "Critical Threshold must be between 1 and 10.",
+        variant: "destructive",
+      });
+      return;
+    }
+    onRoll(nickname, skillRank, modifier, criticalThreshold);
   };
 
   return (
@@ -68,6 +77,7 @@ export function PlayerInput({ initialNickname, onRoll }: PlayerInputProps) {
               type="number"
               value={skillRank}
               onChange={(e) => setSkillRank(parseInt(e.target.value, 10) || 0)}
+              min="0"
               className="bg-input placeholder:text-muted-foreground"
             />
           </div>
@@ -84,6 +94,20 @@ export function PlayerInput({ initialNickname, onRoll }: PlayerInputProps) {
             />
           </div>
         </div>
+        <div className="space-y-2">
+            <Label htmlFor="critical-threshold" className="flex items-center text-muted-foreground">
+              <Zap className="w-4 h-4 mr-2" /> Critical Threshold (1-10)
+            </Label>
+            <Input
+              id="critical-threshold"
+              type="number"
+              value={criticalThreshold}
+              onChange={(e) => setCriticalThreshold(parseInt(e.target.value, 10) || 9)}
+              min="1"
+              max="10"
+              className="bg-input placeholder:text-muted-foreground"
+            />
+          </div>
         <Button
           onClick={handleRoll}
           className="w-full bg-accent hover:bg-accent/90 text-accent-foreground text-lg py-6 rounded-lg shadow-lg transition-transform hover:scale-105"
