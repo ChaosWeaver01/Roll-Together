@@ -67,12 +67,12 @@ export function RollHistoryItem({ roll }: RollHistoryItemProps) {
         </div>
       </div>
       
-      <div className="mb-3">
-        <div className={cn("flex items-center text-lg mb-1", getOutcomeStyles(roll.rollOutcomeState))}>
+      <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-2 mb-3">
+        <div className={cn("flex items-center text-lg", getOutcomeStyles(roll.rollOutcomeState))}>
           <OutcomeIcon outcome={roll.rollOutcomeState} />
           <span>{formatOutcomeText(roll.rollOutcomeState)}</span>
         </div>
-        <div className="flex flex-wrap gap-1 text-sm text-muted-foreground">
+        <div className="flex flex-wrap gap-x-3 gap-y-1 text-sm text-muted-foreground items-baseline">
           <div className="flex items-center bg-background/50 px-2 py-1 rounded">
             <Info className="w-3.5 h-3.5 mr-1.5" />
             <span>Skill: {roll.skillRank}</span>
