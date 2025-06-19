@@ -33,7 +33,7 @@ export function RoomClient({ roomId }: RoomClientProps) {
   const { toast } = useToast();
   const [roomUrl, setRoomUrl] = useState('');
 
-  const [isLeftPanelOpen, setIsLeftPanelOpen] = useState(true); // Default left panel to open
+  const [isLeftPanelOpen, setIsLeftPanelOpen] = useState(true);
   const [isRightPanelOpen, setIsRightPanelOpen] = useState(false); 
 
   const [isCreateMacroDialogOpen, setIsCreateMacroDialogOpen] = useState(false);
@@ -52,20 +52,18 @@ export function RoomClient({ roomId }: RoomClientProps) {
       if (storedPanelStates) {
         try {
           const { leftOpen, rightOpen } = JSON.parse(storedPanelStates);
-          setIsLeftPanelOpen(leftOpen !== undefined ? leftOpen : true); // Default to true if not found
-          setIsRightPanelOpen(rightOpen !== undefined ? rightOpen : false); // Default to false if not found
+          setIsLeftPanelOpen(leftOpen !== undefined ? leftOpen : true);
+          setIsRightPanelOpen(rightOpen !== undefined ? rightOpen : false);
         } catch (e) {
           console.error("Failed to parse panel states from localStorage", e);
-          setIsLeftPanelOpen(true); // Default to true on error
-          setIsRightPanelOpen(false); // Default to false on error
+          setIsLeftPanelOpen(true); 
+          setIsRightPanelOpen(false); 
         }
       } else {
-        // Default states if no stored state
         setIsLeftPanelOpen(true);
         setIsRightPanelOpen(false);
       }
 
-      // Load macros
       const macrosKey = `${LOCAL_STORAGE_MACROS_KEY_PREFIX}${roomId}`;
       const storedMacros = localStorage.getItem(macrosKey);
       if (storedMacros) {
@@ -85,7 +83,6 @@ export function RoomClient({ roomId }: RoomClientProps) {
     }
   }, [isLeftPanelOpen, isRightPanelOpen, roomId]);
 
-  // Persist macros to localStorage whenever they change
   useEffect(() => {
     if (typeof window !== 'undefined' && roomId) {
       const macrosKey = `${LOCAL_STORAGE_MACROS_KEY_PREFIX}${roomId}`;
@@ -190,7 +187,7 @@ export function RoomClient({ roomId }: RoomClientProps) {
   };
   
   const handleOpenCreateMacroDialog = (macroToEdit: Macro | null = null) => {
-    setEditingMacro(macroToEdit); // Set the macro to be edited, or null for new
+    setEditingMacro(macroToEdit); 
     setIsCreateMacroDialogOpen(true);
   };
 
@@ -198,18 +195,16 @@ export function RoomClient({ roomId }: RoomClientProps) {
     setSavedMacros(prevMacros => {
       const existingIndex = prevMacros.findIndex(m => m.id === macro.id);
       if (existingIndex > -1) {
-        // Update existing macro
         const updatedMacros = [...prevMacros];
         updatedMacros[existingIndex] = macro;
         return updatedMacros;
       } else {
-        // Add new macro
-        return [macro, ...prevMacros]; // Add to the beginning for most recent
+        return [macro, ...prevMacros]; 
       }
     });
     toast({ title: "Macro Saved!", description: `Macro "${macro.name}" has been saved.` });
     setIsCreateMacroDialogOpen(false);
-    setEditingMacro(null); // Clear editing state
+    setEditingMacro(null); 
   };
 
   const handleExecuteMacro = (macroId: string) => {
@@ -219,7 +214,6 @@ export function RoomClient({ roomId }: RoomClientProps) {
       return;
     }
     
-    // Nickname check from original roll handlers
     const nicknameToUse = currentNickname.trim() || `Player${generateId().substring(0,4)}`;
      if (!nicknameToUse.trim()) {
       toast({
@@ -231,11 +225,11 @@ export function RoomClient({ roomId }: RoomClientProps) {
     }
 
     if (macroToExecute.macroType === 'skill') {
-      const { diceCount, modifier, criticalThreshold, isCombatRoll } = macroToExecute as SkillRoll; // Type assertion
+      const { diceCount, modifier, criticalThreshold, isCombatRoll } = macroToExecute as SkillRoll; 
       handleSkillRoll(diceCount, modifier, criticalThreshold, isCombatRoll);
       toast({ title: "Skill Macro Executed", description: `Rolled "${macroToExecute.name}".`});
     } else if (macroToExecute.macroType === 'generic') {
-      const { selectedDice, modifier } = macroToExecute as GenericRoll; // Type assertion
+      const { selectedDice, modifier } = macroToExecute as GenericRoll; 
       handleGenericRoll(selectedDice, modifier);
       toast({ title: "Generic Macro Executed", description: `Rolled "${macroToExecute.name}".`});
     }
@@ -259,7 +253,6 @@ export function RoomClient({ roomId }: RoomClientProps) {
 
   return (
     <div className="flex flex-col min-h-screen bg-background">
-      {/* Header */}
       <header className="p-4 border-b border-sidebar-border bg-sidebar text-sidebar-foreground sticky top-0 z-10">
         <div className="container mx-auto flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-center gap-2">
@@ -315,9 +308,7 @@ export function RoomClient({ roomId }: RoomClientProps) {
         </div>
       </header>
 
-      {/* Main Content Area with Panels */}
       <div className="flex flex-1 overflow-hidden">
-        {/* Left Panel */}
         <aside
           className={cn(
             "bg-sidebar text-sidebar-foreground border-r border-sidebar-border transition-all duration-300 ease-in-out overflow-y-auto",
@@ -333,7 +324,6 @@ export function RoomClient({ roomId }: RoomClientProps) {
           )}
         </aside>
 
-        {/* Center Content (Roll History) */}
         <main className="flex-1 p-4 sm:p-6 md:p-8 overflow-y-auto bg-card/50">
           <div className="max-w-4xl mx-auto">
             <div className="flex justify-between items-center mb-6">
@@ -351,7 +341,6 @@ export function RoomClient({ roomId }: RoomClientProps) {
           </div>
         </main>
 
-        {/* Right Panel (Macros Panel) */}
         <aside
           className={cn(
             "bg-sidebar text-sidebar-foreground border-l border-sidebar-border transition-all duration-300 ease-in-out overflow-y-auto",
@@ -401,4 +390,3 @@ export function RoomClient({ roomId }: RoomClientProps) {
     </div>
   );
 }
-
