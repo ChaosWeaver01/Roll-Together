@@ -102,7 +102,7 @@ export function RollHistoryItem({ roll }: RollHistoryItemProps) {
           />
         ))}
         <div 
-          className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-card border border-border text-foreground text-lg sm:text-xl font-semibold shadow-sm mx-1"
+          className="flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-card border-2 border-muted-foreground text-foreground text-xl sm:text-2xl font-semibold shadow-sm mx-1"
           aria-label={`Modifier: ${roll.modifier >= 0 ? `+${roll.modifier}` : roll.modifier}`}
         >
           {roll.modifier >= 0 ? `+${roll.modifier}` : roll.modifier}
