@@ -30,11 +30,6 @@ jobs:
 
       - name: Build Next.js app
         run: npm run build
-        env:
-          # If you have any build-time environment variables, set them here
-          # NEXT_PUBLIC_EXAMPLE_VAR: ${{ secrets.EXAMPLE_VAR }}
-          # For basePath to work correctly, Next.js picks it up from next.config.js
-          # No specific env var needed here for basePath if it's hardcoded in next.config.js
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
