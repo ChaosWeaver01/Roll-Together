@@ -11,11 +11,13 @@ import { GenericDiceRoller } from '@/components/GenericDiceRoller';
 import { RollHistory } from '@/components/RollHistory';
 import { performSkillRoll, performGenericRoll, determineRollOutcome } from '@/lib/diceRoller';
 import { generateId, cn } from '@/lib/utils';
-import type { Roll, SkillRoll, GenericRoll, SkillDieRoll, GenericDieRoll } from '@/types/room';
+import type { Roll, SkillRoll, GenericRoll, SkillDieRoll, GenericDieRoll, Macro } from '@/types/room';
 import { useToast } from "@/hooks/use-toast";
 import { useRoomSync } from '@/hooks/useRoomSync';
 import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { CreateMacroDialog } from '@/components/CreateMacroDialog';
+import { MacroCard } from '@/components/MacroCard';
 
 
 interface RoomClientProps {
@@ -23,6 +25,7 @@ interface RoomClientProps {
 }
 
 const LOCAL_STORAGE_PANEL_STATE_KEY_PREFIX = 'roll-together-panel-states-';
+const LOCAL_STORAGE_MACROS_KEY_PREFIX = 'roll-together-macros-';
 
 export function RoomClient({ roomId }: RoomClientProps) {
   const { rolls, addRoll, clearAllRolls } = useRoomSync(roomId);
@@ -32,6 +35,11 @@ export function RoomClient({ roomId }: RoomClientProps) {
 
   const [isLeftPanelOpen, setIsLeftPanelOpen] = useState(true);
   const [isRightPanelOpen, setIsRightPanelOpen] = useState(false); 
+
+  const [isCreateMacroDialogOpen, setIsCreateMacroDialogOpen] = useState(false);
+  const [savedMacros, setSavedMacros] = useState<Macro[]>([]);
+  const [editingMacro, setEditingMacro] = useState<Macro | null>(null);
+
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -50,6 +58,17 @@ export function RoomClient({ roomId }: RoomClientProps) {
           console.error("Failed to parse panel states from localStorage", e);
         }
       }
+
+      // Load macros
+      const macrosKey = `${LOCAL_STORAGE_MACROS_KEY_PREFIX}${roomId}`;
+      const storedMacros = localStorage.getItem(macrosKey);
+      if (storedMacros) {
+        try {
+          setSavedMacros(JSON.parse(storedMacros));
+        } catch (e) {
+          console.error("Failed to parse macros from localStorage", e);
+        }
+      }
     }
   }, [roomId]);
 
@@ -59,6 +78,15 @@ export function RoomClient({ roomId }: RoomClientProps) {
       localStorage.setItem(panelStatesKey, JSON.stringify({ leftOpen: isLeftPanelOpen, rightOpen: isRightPanelOpen }));
     }
   }, [isLeftPanelOpen, isRightPanelOpen, roomId]);
+
+  // Persist macros to localStorage whenever they change
+  useEffect(() => {
+    if (typeof window !== 'undefined' && roomId) {
+      const macrosKey = `${LOCAL_STORAGE_MACROS_KEY_PREFIX}${roomId}`;
+      localStorage.setItem(macrosKey, JSON.stringify(savedMacros));
+    }
+  }, [savedMacros, roomId]);
+
 
   const handleNicknameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newNickname = event.target.value;
@@ -154,14 +182,74 @@ export function RoomClient({ roomId }: RoomClientProps) {
       description: "The roll history for this room has been cleared.",
     });
   };
-
-  const handleAddPreconfiguredRoll = () => {
-    // Placeholder for future functionality
-    toast({
-        title: "Coming Soon!",
-        description: "Ability to add and manage preconfigured dice roll macros.",
-    });
+  
+  const handleOpenCreateMacroDialog = (macroToEdit: Macro | null = null) => {
+    setEditingMacro(macroToEdit); // Set the macro to be edited, or null for new
+    setIsCreateMacroDialogOpen(true);
   };
+
+  const handleSaveMacro = (macro: Macro) => {
+    setSavedMacros(prevMacros => {
+      const existingIndex = prevMacros.findIndex(m => m.id === macro.id);
+      if (existingIndex > -1) {
+        // Update existing macro
+        const updatedMacros = [...prevMacros];
+        updatedMacros[existingIndex] = macro;
+        return updatedMacros;
+      } else {
+        // Add new macro
+        return [macro, ...prevMacros]; // Add to the beginning for most recent
+      }
+    });
+    toast({ title: "Macro Saved!", description: `Macro "${macro.name}" has been saved.` });
+    setIsCreateMacroDialogOpen(false);
+    setEditingMacro(null); // Clear editing state
+  };
+
+  const handleExecuteMacro = (macroId: string) => {
+    const macroToExecute = savedMacros.find(m => m.id === macroId);
+    if (!macroToExecute) {
+      toast({ title: "Error", description: "Macro not found.", variant: "destructive" });
+      return;
+    }
+    
+    // Nickname check from original roll handlers
+    const nicknameToUse = currentNickname.trim() || `Player${generateId().substring(0,4)}`;
+     if (!nicknameToUse.trim()) {
+      toast({
+        title: "Nickname Required",
+        description: "Please enter a nickname in the header before rolling with a macro.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (macroToExecute.macroType === 'skill') {
+      const { diceCount, modifier, criticalThreshold, isCombatRoll } = macroToExecute;
+      handleSkillRoll(diceCount, modifier, criticalThreshold, isCombatRoll);
+      toast({ title: "Skill Macro Executed", description: `Rolled "${macroToExecute.name}".`});
+    } else if (macroToExecute.macroType === 'generic') {
+      const { selectedDice, modifier } = macroToExecute;
+      handleGenericRoll(selectedDice, modifier);
+      toast({ title: "Generic Macro Executed", description: `Rolled "${macroToExecute.name}".`});
+    }
+  };
+  
+  const handleDeleteMacro = (macroId: string) => {
+    const macroToDelete = savedMacros.find(m => m.id === macroId);
+    setSavedMacros(prev => prev.filter(m => m.id !== macroId));
+     if (macroToDelete) {
+        toast({ title: "Macro Deleted", description: `Macro "${macroToDelete.name}" has been deleted.` });
+    }
+  };
+
+  const handleEditMacro = (macroId: string) => {
+    const macroToEdit = savedMacros.find(m => m.id === macroId);
+    if (macroToEdit) {
+      handleOpenCreateMacroDialog(macroToEdit);
+    }
+  };
+
 
   return (
     <div className="flex flex-col min-h-screen bg-background">
@@ -257,7 +345,7 @@ export function RoomClient({ roomId }: RoomClientProps) {
           </div>
         </main>
 
-        {/* Right Panel (Details Panel) */}
+        {/* Right Panel (Macros Panel) */}
         <aside
           className={cn(
             "bg-sidebar text-sidebar-foreground border-l border-sidebar-border transition-all duration-300 ease-in-out overflow-y-auto",
@@ -266,25 +354,44 @@ export function RoomClient({ roomId }: RoomClientProps) {
           )}
         >
           {isRightPanelOpen && (
-            <Card className="bg-card text-card-foreground shadow-xl h-full">
-              <CardHeader className="flex flex-row items-center justify-between">
-                <CardTitle className="font-headline text-2xl flex items-center text-primary">
-                  <Settings2 className="w-6 h-6 mr-2" />
+            <Card className="bg-card text-card-foreground shadow-xl h-full flex flex-col">
+              <CardHeader className="flex flex-row items-center justify-between sticky top-0 bg-card z-10 py-3 px-4 border-b">
+                <CardTitle className="font-headline text-xl flex items-center text-primary">
+                  <Settings2 className="w-5 h-5 mr-2" />
                   Macros Panel
                 </CardTitle>
-                <Button onClick={handleAddPreconfiguredRoll} variant="outline" size="sm">
+                <Button onClick={() => handleOpenCreateMacroDialog()} variant="outline" size="sm">
                   <PlusCircle className="w-4 h-4 mr-2" />
                   Add Roll
                 </Button>
               </CardHeader>
-              <CardContent className="space-y-4">
-                {/* Additional UI for listing/managing macros will go here */}
-                {/* Example: <p className="text-sm text-muted-foreground">No macros configured yet.</p> */}
+              <CardContent className="space-y-3 p-4 flex-1 overflow-y-auto">
+                {savedMacros.length === 0 ? (
+                  <p className="text-sm text-muted-foreground text-center py-4">
+                    No macros configured yet. Click "Add Roll" to create one.
+                  </p>
+                ) : (
+                  savedMacros.map(macro => (
+                    <MacroCard
+                      key={macro.id}
+                      macro={macro}
+                      onExecute={handleExecuteMacro}
+                      onEdit={handleEditMacro}
+                      onDelete={handleDeleteMacro}
+                    />
+                  ))
+                )}
               </CardContent>
             </Card>
           )}
         </aside>
       </div>
+      <CreateMacroDialog
+        isOpen={isCreateMacroDialogOpen}
+        onOpenChange={setIsCreateMacroDialogOpen}
+        onSaveMacro={handleSaveMacro}
+        existingMacro={editingMacro}
+      />
     </div>
   );
 }
