@@ -8,75 +8,98 @@ body {
 
 @layer base {
   :root {
-    --background: 220 15% 10%; /* Dark Desaturated Blue */
-    --foreground: 220 15% 95%; /* Light Gray-Blue */
-    --card: 220 15% 15%; /* Slightly Lighter Dark Blue */
-    --card-foreground: 220 15% 95%;
-    --popover: 220 15% 8%; /* Very Dark Blue */
-    --popover-foreground: 220 15% 95%;
-    --primary: 210 70% 50%; /* Accessible Blue */
-    --primary-foreground: 0 0% 100%; /* White */
-    --secondary: 170 60% 40%; /* Accessible Teal/Green */
-    --secondary-foreground: 0 0% 100%; /* White */
-    --muted: 220 15% 20%; /* Medium Gray-Blue */
-    --muted-foreground: 220 10% 70%; /* Lighter Gray-Blue */
-    --accent: 170 60% 40%; /* Accessible Teal/Green */
-    --accent-foreground: 0 0% 100%; /* White */
-    --destructive: 4 71% 50%; /* Accessible Red */
-    --destructive-foreground: 0 0% 100%; /* White */
-    --border: 220 15% 25%; /* Gray-Blue Border */
-    --input: 220 15% 22%; /* Dark Gray-Blue Input BG */
-    --ring: 210 70% 50%; /* Accessible Blue Ring */
-    --chart-1: 210 80% 60%; /* Bright Blue */
-    --chart-2: 150 70% 45%; /* Sea Green */
-    --chart-3: 30 80% 60%;  /* Orange */
-    --chart-4: 280 70% 65%; /* Purple */
-    --chart-5: 0 70% 55%;   /* Reddish */
+    --background: 271 76% 5%; /* #222222 Very Dark Gray (adjusted to be near black and slightly desaturated from pure Indigo) */
+    --foreground: 271 10% 95%; /* Light Gray for contrast */
+
+    --card: 271 70% 8%; /* Slightly Lighter Dark Indigo/Gray */
+    --card-foreground: 271 10% 95%;
+
+    --popover: 271 80% 4%; /* Even Darker Indigo/Gray */
+    --popover-foreground: 271 10% 95%;
+
+    --primary: 271 100% 25%; /* #4B0082 Dark Indigo */
+    --primary-foreground: 285 100% 95%; /* #F1E0FF Light Violet/Lavender for text on primary */
+
+    --secondary: 285 86% 71%; /* #C777F1 Bright Violet (Accent) for secondary elements */
+    --secondary-foreground: 271 100% 15%; /* Darker Indigo for text on accent */
+
+    --muted: 271 30% 20%; /* Muted Indigo/Gray */
+    --muted-foreground: 271 10% 65%; /* Lighter Muted Indigo/Gray */
+
+    --accent: 285 86% 71%; /* #C777F1 Bright Violet */
+    --accent-foreground: 271 100% 15%; /* Darker Indigo for text on accent */
+
+    --destructive: 0 63% 31%; /* Dark Red */
+    --destructive-foreground: 0 0% 95%; /* Light Gray for text on destructive */
+
+    --border: 271 70% 15%; /* Indigo/Gray Border */
+    --input: 271 70% 12%; /* Dark Indigo/Gray Input BG */
+    --ring: 285 86% 71%; /* Bright Violet Ring (same as accent) */
+
+    --chart-1: 271 70% 50%; /* Indigo */
+    --chart-2: 285 70% 60%; /* Violet */
+    --chart-3: 300 70% 65%; /* Magenta */
+    --chart-4: 250 70% 55%; /* Blue-Indigo */
+    --chart-5: 271 50% 40%; /* Muted Indigo */
+
     --radius: 0.5rem;
-    --sidebar-background: 220 15% 8%; /* Very Dark Blue */
-    --sidebar-foreground: 220 15% 90%; /* Slightly Dimmed Light Gray-Blue */
-    --sidebar-primary: 210 70% 45%; /* Darker Accessible Blue */
-    --sidebar-primary-foreground: 0 0% 100%; /* White */
-    --sidebar-accent: 170 60% 45%; /* Darker Accessible Teal/Green */
-    --sidebar-accent-foreground: 0 0% 100%; /* White */
-    --sidebar-border: 220 15% 20%; /* Medium Gray-Blue */
-    --sidebar-ring: 210 70% 50%; /* Accessible Blue Ring */
+
+    /* Specific sidebar theming based on main theme */
+    --sidebar-background: 271 76% 7%; /* Slightly lighter than main background */
+    --sidebar-foreground: 271 10% 90%;
+    --sidebar-primary: 271 100% 30%; /* Slightly lighter primary */
+    --sidebar-primary-foreground: 285 100% 95%;
+    --sidebar-accent: 285 86% 65%; /* Slightly muted accent */
+    --sidebar-accent-foreground: 271 100% 15%;
+    --sidebar-border: 271 70% 18%;
+    --sidebar-ring: 285 86% 71%;
   }
 
-  /* Explicit dark theme, using the same WCAG compliant values */
   .dark {
-    --background: 220 15% 10%;
-    --foreground: 220 15% 95%;
-    --card: 220 15% 15%;
-    --card-foreground: 220 15% 95%;
-    --popover: 220 15% 8%;
-    --popover-foreground: 220 15% 95%;
-    --primary: 210 70% 50%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 170 60% 40%;
-    --secondary-foreground: 0 0% 100%;
-    --muted: 220 15% 20%;
-    --muted-foreground: 220 10% 70%;
-    --accent: 170 60% 40%;
-    --accent-foreground: 0 0% 100%;
-    --destructive: 4 71% 50%;
-    --destructive-foreground: 0 0% 100%;
-    --border: 220 15% 25%;
-    --input: 220 15% 22%;
-    --ring: 210 70% 50%;
-    --chart-1: 210 80% 60%;
-    --chart-2: 150 70% 45%;
-    --chart-3: 30 80% 60%;
-    --chart-4: 280 70% 65%;
-    --chart-5: 0 70% 55%;
-    --sidebar-background: 220 15% 8%;
-    --sidebar-foreground: 220 15% 90%;
-    --sidebar-primary: 210 70% 45%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 170 60% 45%;
-    --sidebar-accent-foreground: 0 0% 100%;
-    --sidebar-border: 220 15% 20%;
-    --sidebar-ring: 210 70% 50%;
+    --background: 271 76% 5%; /* #222222 Very Dark Gray */
+    --foreground: 271 10% 95%;
+
+    --card: 271 70% 8%;
+    --card-foreground: 271 10% 95%;
+
+    --popover: 271 80% 4%;
+    --popover-foreground: 271 10% 95%;
+
+    --primary: 271 100% 25%; /* #4B0082 Dark Indigo */
+    --primary-foreground: 285 100% 95%;
+
+    --secondary: 285 86% 71%; /* #C777F1 Bright Violet (Accent) */
+    --secondary-foreground: 271 100% 15%;
+
+    --muted: 271 30% 20%;
+    --muted-foreground: 271 10% 65%;
+
+    --accent: 285 86% 71%; /* #C777F1 Bright Violet */
+    --accent-foreground: 271 100% 15%;
+
+    --destructive: 0 63% 31%;
+    --destructive-foreground: 0 0% 95%;
+
+    --border: 271 70% 15%;
+    --input: 271 70% 12%;
+    --ring: 285 86% 71%;
+
+    --chart-1: 271 70% 50%;
+    --chart-2: 285 70% 60%;
+    --chart-3: 300 70% 65%;
+    --chart-4: 250 70% 55%;
+    --chart-5: 271 50% 40%;
+    
+    --radius: 0.5rem;
+
+    --sidebar-background: 271 76% 7%;
+    --sidebar-foreground: 271 10% 90%;
+    --sidebar-primary: 271 100% 30%;
+    --sidebar-primary-foreground: 285 100% 95%;
+    --sidebar-accent: 285 86% 65%;
+    --sidebar-accent-foreground: 271 100% 15%;
+    --sidebar-border: 271 70% 18%;
+    --sidebar-ring: 285 86% 71%;
   }
 }
 
