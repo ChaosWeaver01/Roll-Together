@@ -2,7 +2,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from 'react';
-import { Share2, ClipboardCopy, Home, Trash2, Archive } from 'lucide-react';
+import { Share2, ClipboardCopy, Home, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useRoomSync } from '@/hooks/useRoomSync';
 import { PlayerInput } from '@/components/PlayerInput';
@@ -20,7 +20,6 @@ import {
   SidebarHeader,
   SidebarTrigger,
 } from '@/components/ui/sidebar';
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 
 
 interface RoomClientProps {
@@ -99,22 +98,6 @@ export function RoomClient({ roomId }: RoomClientProps) {
         </SidebarContent>
       </Sidebar>
 
-      <Sidebar side="right" collapsible="icon" className="border-l bg-card">
-        <SidebarHeader className="p-4 flex justify-between items-center border-b">
-          <h2 className="font-headline text-xl text-primary group-data-[state=collapsed]:hidden">Macros</h2>
-          <SidebarTrigger className="group-data-[state=expanded]:hidden" />
-        </SidebarHeader>
-        <SidebarContent className="p-4">
-          <Card className="h-full">
-            <CardContent className="h-full flex flex-col items-center justify-center text-muted-foreground">
-              <Archive className="w-16 h-16 mb-4 text-primary/50" />
-              <p className="text-lg">Macro management coming soon!</p>
-              <p className="text-sm">Define your favorite rolls here.</p>
-            </CardContent>
-          </Card>
-        </SidebarContent>
-      </Sidebar>
-
       <SidebarInset>
         <div className="flex flex-col min-h-screen">
           <div className="container mx-auto py-8 px-4 flex flex-col grow">
@@ -165,4 +148,3 @@ export function RoomClient({ roomId }: RoomClientProps) {
     </SidebarProvider>
   );
 }
-
