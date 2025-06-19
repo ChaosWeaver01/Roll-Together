@@ -1,8 +1,9 @@
+
 "use client";
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Dices, User } from 'lucide-react';
+import { Dices, User, Hash } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -11,14 +12,15 @@ import { generateId } from '@/lib/utils';
 
 export function CreateRoomForm() {
   const [nickname, setNickname] = useState('');
+  const [customRoomName, setCustomRoomName] = useState('');
   const router = useRouter();
 
   const handleCreateRoom = () => {
-    const roomId = generateId();
+    const finalRoomId = customRoomName.trim() !== '' ? customRoomName.trim() : generateId();
     if (nickname.trim()) {
       localStorage.setItem('rt-nickname', nickname.trim());
     }
-    router.push(`/room/${roomId}`);
+    router.push(`/room/${finalRoomId}`);
   };
 
   return (
@@ -29,7 +31,7 @@ export function CreateRoomForm() {
         </div>
         <CardTitle className="font-headline text-4xl">Roll Together</CardTitle>
         <CardDescription className="text-muted-foreground">
-          Create a room and start rolling dice with your friends!
+          Create or join a room and start rolling dice with your friends!
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -48,13 +50,27 @@ export function CreateRoomForm() {
               className="bg-input placeholder:text-muted-foreground"
             />
           </div>
+          <div className="space-y-2">
+            <Label htmlFor="customRoomName" className="flex items-center">
+              <Hash className="w-4 h-4 mr-2" />
+              Custom Room Name (Optional)
+            </Label>
+            <Input
+              id="customRoomName"
+              type="text"
+              placeholder="E.g., DragonLair (or leave blank for random)"
+              value={customRoomName}
+              onChange={(e) => setCustomRoomName(e.target.value)}
+              className="bg-input placeholder:text-muted-foreground"
+            />
+          </div>
           <Button
             onClick={handleCreateRoom}
             className="w-full bg-primary hover:bg-primary/90 text-primary-foreground text-lg py-6 rounded-lg shadow-lg transition-transform hover:scale-105"
-            aria-label="Create a new game room"
+            aria-label="Create or join a game room"
           >
             <Dices className="mr-2 h-6 w-6" />
-            Create Room
+            Enter Room
           </Button>
         </div>
       </CardContent>
