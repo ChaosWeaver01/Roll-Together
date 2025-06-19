@@ -69,34 +69,36 @@ export function PlayerInput({ onRoll }: PlayerInputProps) {
           </div>
       </CardHeader>
       <CardContent className="space-y-6">
-        <div className="space-y-2">
-            <Label htmlFor="dice-count" className="flex items-center text-muted-foreground">
-              <TrendingUp className="w-4 h-4 mr-2" /> Dice (0-9)
-            </Label>
-            <Input
-              id="dice-count"
-              type="number"
-              value={diceCount}
-              onChange={handleDiceCountChange}
-              min="0"
-              max="9"
-              className="bg-input placeholder:text-muted-foreground"
-            />
-        </div>
-        
-        <div className="space-y-2">
-            <Label htmlFor="critical-threshold" className="flex items-center text-muted-foreground">
-              <Zap className="w-4 h-4 mr-2" /> Critical Threshold (1-10)
-            </Label>
-            <Input
-              id="critical-threshold"
-              type="number"
-              value={criticalThreshold}
-              onChange={(e) => setCriticalThreshold(parseInt(e.target.value, 10) || 9)}
-              min="1"
-              max="10"
-              className="bg-input placeholder:text-muted-foreground"
-            />
+        <div className="flex space-x-4">
+          <div className="flex-grow space-y-2">
+              <Label htmlFor="dice-count" className="flex items-center text-muted-foreground">
+                <TrendingUp className="w-4 h-4 mr-2" /> Dice (0-9)
+              </Label>
+              <Input
+                id="dice-count"
+                type="number"
+                value={diceCount}
+                onChange={handleDiceCountChange}
+                min="0"
+                max="9"
+                className="bg-input placeholder:text-muted-foreground"
+              />
+          </div>
+          
+          <div className="flex-grow space-y-2">
+              <Label htmlFor="critical-threshold" className="flex items-center text-muted-foreground">
+                <Zap className="w-4 h-4 mr-2" /> Critical Threshold (1-10)
+              </Label>
+              <Input
+                id="critical-threshold"
+                type="number"
+                value={criticalThreshold}
+                onChange={(e) => setCriticalThreshold(parseInt(e.target.value, 10) || 9)}
+                min="1"
+                max="10"
+                className="bg-input placeholder:text-muted-foreground"
+              />
+          </div>
         </div>
 
         <div className="flex items-end space-x-4">
