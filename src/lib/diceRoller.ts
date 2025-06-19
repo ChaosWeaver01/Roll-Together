@@ -110,10 +110,16 @@ export function calculateSkillRollTotal(roll: SkillRoll): { total: number; contr
       currentTotal += lowestNonPowerDie.value;
       currentContributingDiceIndices.push(lowestNonPowerDie.originalIndex);
       
-      if (sortedNonPowerDice.length > 1) { // Check if there's a highest distinct from lowest
+      if (sortedNonPowerDice.length > 1) { 
         const highestNonPowerDie = sortedNonPowerDice[sortedNonPowerDice.length - 1];
-        currentTotal += highestNonPowerDie.value;
-        currentContributingDiceIndices.push(highestNonPowerDie.originalIndex);
+        if (highestNonPowerDie.originalIndex !== lowestNonPowerDie.originalIndex) { // Ensure distinct dice if possible
+            currentTotal += highestNonPowerDie.value;
+            currentContributingDiceIndices.push(highestNonPowerDie.originalIndex);
+        } else if (sortedNonPowerDice.length > 2 && sortedNonPowerDice[1].originalIndex !== lowestNonPowerDie.originalIndex) {
+            // If highest is same as lowest, but there's a second distinct non-power die
+            currentTotal += sortedNonPowerDice[1].value;
+            currentContributingDiceIndices.push(sortedNonPowerDice[1].originalIndex);
+        }
       }
     }
     
@@ -152,14 +158,13 @@ export function calculateSkillRollTotal(roll: SkillRoll): { total: number; contr
       
       total = powerDie.value + lowestOtherDieValue + modifier;
       contributingDiceIndices = [0, lowestOtherDieOriginalIndex];
-    } else { // Should not happen with current logic, but as fallback
+    } else { 
       total = results.reduce((sum, die) => sum + die.value, 0) + modifier;
       contributingDiceIndices = results.map((_, index) => index);
     }
     return { total, contributingDiceIndices };
   }
 
-  // diceCount >= 2 (and not trueCritical non-combat)
   let highestPowerDieValue = -Infinity;
   let highestPowerDieIndex = -1;
   let highestNonPowerDieValue = -Infinity;
@@ -192,7 +197,7 @@ export function calculateSkillRollTotal(roll: SkillRoll): { total: number; contr
 
   total = sumOfDice + modifier;
   
-  if (results.length === 0) { // Should not happen if diceCount > 0
+  if (results.length === 0) { 
     total = modifier;
     contributingDiceIndices = [];
   }
@@ -214,16 +219,21 @@ export function calculateRollDisplayInfo(roll: Roll): RollDisplayInfo {
     return { total, contributingDiceIndices };
   } else if (roll.rollType === 'generic') {
     const genericRoll = roll as GenericRoll;
-    const total = genericRoll.results.reduce((sum, die) => sum + die.value, 0) + genericRoll.modifier;
+    const total = (genericRoll.results && Array.isArray(genericRoll.results) ? genericRoll.results.reduce((sum, die) => sum + die.value, 0) : 0) + genericRoll.modifier;
     
-    const diceRequestString = genericRoll.selectedDice.join(', ');
+    const diceRequestString = (genericRoll.selectedDice && Array.isArray(genericRoll.selectedDice))
+      ? genericRoll.selectedDice.join(', ')
+      : 'N/A';
 
-    const individualResultsString = genericRoll.results
-      .map(result => `${result.dieType}(${result.value})`)
-      .join('; ');
+    const individualResultsString = (genericRoll.results && Array.isArray(genericRoll.results))
+      ? genericRoll.results
+          .map(result => `${result.dieType}(${result.value})`)
+          .join('; ')
+      : "None";
       
     return { total, diceRequestString, individualResultsString };
   }
   // Fallback for safety, though rollType should always be 'skill' or 'generic'
   return { total: roll.modifier };
 }
+
