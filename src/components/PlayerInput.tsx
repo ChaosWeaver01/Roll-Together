@@ -116,7 +116,7 @@ export function PlayerInput({ onRoll }: PlayerInputProps) {
           </div>
           <Button
             onClick={handleRoll}
-            className="bg-accent hover:bg-accent/90 text-accent-foreground text-base py-2 px-6 rounded-lg shadow-md transition-transform hover:scale-105"
+            className="bg-primary hover:bg-primary/90 text-primary-foreground text-base py-2 px-6 rounded-lg shadow-md transition-transform hover:scale-105"
             aria-label="Roll the skill dice"
           >
             <Dices className="mr-2 h-5 w-5" />
