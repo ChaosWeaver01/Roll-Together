@@ -14,12 +14,12 @@ export function Dice({ roll, isRolling = false, isContributingToTotal = false }:
   return (
     <div
       className={cn(
-        'flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 border-2 rounded-lg text-xl sm:text-2xl font-bold shadow-md transition-all duration-300',
+        'flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 border-2 rounded-lg text-sm sm:text-base font-bold shadow-md transition-all duration-300',
         isPowerDie
           ? 'bg-accent text-accent-foreground'
           : 'bg-card text-foreground',
         isContributingToTotal
-          ? 'border-yellow-400' // Highlight contributing dice with a yellow border
+          ? 'border-yellow-400' 
           : isPowerDie ? 'border-accent-foreground' : 'border-muted-foreground',
         isRolling ? 'animate-roll-dice opacity-75' : 'opacity-100'
       )}

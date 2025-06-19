@@ -41,6 +41,9 @@ const OutcomeIcon = ({ outcome }: { outcome: RollOutcomeState }) => {
 };
 
 const formatOutcomeText = (outcome: RollOutcomeState, isCombatRoll: boolean): string => {
+  if (outcome === 'normal') {
+    return 'Standard Action';
+  }
   switch (outcome) {
     case 'botch':
       return 'Botch!';
@@ -50,10 +53,8 @@ const formatOutcomeText = (outcome: RollOutcomeState, isCombatRoll: boolean): st
       return 'Critical!';
     case 'trueCritical':
       return 'TRUE CRITICAL!';
-    case 'normal':
-      return 'Standard Action';
     default:
-      return 'Standard Action';
+      return 'Standard Action'; 
   }
 }
 
@@ -101,14 +102,14 @@ export function RollHistoryItem({ roll }: RollHistoryItemProps) {
           />
         ))}
         <div 
-          className="flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-card border-2 border-muted-foreground text-foreground text-xl sm:text-2xl font-semibold shadow-sm mx-1"
+          className="flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-card border-2 border-muted-foreground text-foreground text-sm sm:text-base font-semibold shadow-sm mx-1"
           aria-label={`Modifier: ${roll.modifier >= 0 ? `+${roll.modifier}` : roll.modifier}`}
         >
           {roll.modifier >= 0 ? `+${roll.modifier}` : roll.modifier}
         </div>
         <span className="text-xl sm:text-2xl font-bold text-muted-foreground mx-1">=</span>
         <span 
-          className="text-3xl sm:text-4xl font-bold text-accent" 
+          className="text-xl sm:text-2xl font-bold text-accent" 
           aria-label={`Total roll value: ${totalRollValue}`}
         >
           {totalRollValue}
