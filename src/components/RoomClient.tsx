@@ -2,7 +2,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from 'react';
-import { Share2, ClipboardCopy, Home, Trash2 } from 'lucide-react';
+import { Share2, ClipboardCopy, Home, Trash2, Archive } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useRoomSync } from '@/hooks/useRoomSync';
 import { PlayerInput } from '@/components/PlayerInput';
@@ -12,6 +12,16 @@ import { generateId } from '@/lib/utils';
 import type { Roll } from '@/types/room';
 import { useToast } from "@/hooks/use-toast";
 import Link from 'next/link';
+import {
+  SidebarProvider,
+  Sidebar,
+  SidebarContent,
+  SidebarInset,
+  SidebarHeader,
+  SidebarTrigger,
+} from '@/components/ui/sidebar';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+
 
 interface RoomClientProps {
   roomId: string;
@@ -78,52 +88,77 @@ export function RoomClient({ roomId }: RoomClientProps) {
   };
 
   return (
-    <div className="container mx-auto py-8 px-4 flex flex-col grow">
-      <header className="mb-8 text-center">
-        <h1 className="font-headline text-4xl sm:text-5xl text-primary mb-2">
-          Room: <span className="text-accent font-code">{roomId}</span>
-        </h1>
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-2 mt-4">
-          <Button variant="outline" onClick={copyRoomUrl} aria-label="Copy room URL to clipboard">
-            <ClipboardCopy className="w-4 h-4 mr-2" /> Copy Link
-          </Button>
-          {roomUrl && (
-            <Button variant="outline" asChild>
-              <a
-                href={`mailto:?subject=Join my Roll Together room!&body=Let's roll some dice! Join my room: ${roomUrl}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Share room URL via email"
-              >
-                <Share2 className="w-4 h-4 mr-2" /> Share via Email
-              </a>
-            </Button>
-          )}
-           <Button variant="ghost" asChild>
-            <Link href="/" aria-label="Back to Home">
-              <Home className="w-4 h-4 mr-2" /> Home
-            </Link>
-          </Button>
-        </div>
-      </header>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 flex-grow">
-        <div className="lg:col-span-1">
+    <SidebarProvider defaultOpen={true}>
+      <Sidebar side="left" collapsible="icon" className="border-r bg-card">
+        <SidebarHeader className="p-4 flex justify-between items-center border-b">
+          <h2 className="font-headline text-xl text-primary group-data-[state=collapsed]:hidden">Your Turn</h2>
+          <SidebarTrigger className="group-data-[state=expanded]:hidden" />
+        </SidebarHeader>
+        <SidebarContent className="p-4">
           <PlayerInput initialNickname={initialNickname} onRoll={handleRoll} />
-        </div>
-        <div className="lg:col-span-2 bg-card/50 p-6 rounded-xl shadow-xl border border-border">
-           <div className="flex justify-between items-center mb-6">
-            <h2 className="font-headline text-3xl text-primary">Roll History</h2>
-            <Button variant="outline" onClick={handleClearHistory} aria-label="Clear roll history">
-              <Trash2 className="w-4 h-4 mr-2" /> Clear History
-            </Button>
+        </SidebarContent>
+      </Sidebar>
+
+      <SidebarInset>
+        <div className="flex flex-col min-h-screen">
+          <div className="container mx-auto py-8 px-4 flex flex-col grow">
+            <header className="mb-8 text-center">
+              <h1 className="font-headline text-4xl sm:text-5xl text-primary mb-2">
+                Room: <span className="text-accent font-code">{roomId}</span>
+              </h1>
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-2 mt-4">
+                <Button variant="outline" onClick={copyRoomUrl} aria-label="Copy room URL to clipboard">
+                  <ClipboardCopy className="w-4 h-4 mr-2" /> Copy Link
+                </Button>
+                {roomUrl && (
+                  <Button variant="outline" asChild>
+                    <a
+                      href={`mailto:?subject=Join my Roll Together room!&body=Let's roll some dice! Join my room: ${roomUrl}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label="Share room URL via email"
+                    >
+                      <Share2 className="w-4 h-4 mr-2" /> Share via Email
+                    </a>
+                  </Button>
+                )}
+                <Button variant="ghost" asChild>
+                  <Link href="/" aria-label="Back to Home">
+                    <Home className="w-4 h-4 mr-2" /> Home
+                  </Link>
+                </Button>
+              </div>
+            </header>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 flex-grow">
+              <div className="lg:col-span-1 bg-card/80 p-6 rounded-xl shadow-xl border border-border">
+                <div className="flex justify-between items-center mb-6">
+                  <h2 className="font-headline text-3xl text-primary">Roll History</h2>
+                  <Button variant="outline" onClick={handleClearHistory} aria-label="Clear roll history">
+                    <Trash2 className="w-4 h-4 mr-2" /> Clear History
+                  </Button>
+                </div>
+                <RollHistory rolls={rolls} />
+              </div>
+
+              <div className="lg:col-span-1 bg-card/80 p-6 rounded-xl shadow-xl border border-border">
+                <h2 className="font-headline text-3xl text-primary mb-6">Macros</h2>
+                <Card className="h-full">
+                  <CardContent className="h-full flex flex-col items-center justify-center text-muted-foreground">
+                    <Archive className="w-16 h-16 mb-4 text-primary/50" />
+                    <p className="text-lg">Macro management coming soon!</p>
+                    <p className="text-sm">Define your favorite rolls here.</p>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+            
+            <footer className="mt-12 text-center text-muted-foreground text-sm">
+              <p>&copy; {new Date().getFullYear()} Roll Together. May your rolls be mighty!</p>
+            </footer>
           </div>
-          <RollHistory rolls={rolls} />
         </div>
-      </div>
-       <footer className="mt-12 text-center text-muted-foreground text-sm">
-        <p>&copy; {new Date().getFullYear()} Roll Together. May your rolls be mighty!</p>
-      </footer>
-    </div>
+      </SidebarInset>
+    </SidebarProvider>
   );
 }
