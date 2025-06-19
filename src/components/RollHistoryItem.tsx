@@ -40,12 +40,16 @@ const OutcomeIcon = ({ outcome }: { outcome: RollOutcomeState }) => {
   }
 };
 
-const formatOutcomeText = (outcome: RollOutcomeState): string => {
+const formatOutcomeText = (outcome: RollOutcomeState, isCombatRoll: boolean): string => {
+  if (outcome === 'normal' && isCombatRoll) {
+    return 'Combat Action';
+  }
   switch (outcome) {
     case 'botch': return 'Botch!';
     case 'failure': return 'Failure';
     case 'critical': return 'Critical!';
     case 'trueCritical': return 'TRUE CRITICAL!';
+    case 'normal': return 'Normal Roll';
     default: return 'Normal Roll';
   }
 }
@@ -70,7 +74,7 @@ export function RollHistoryItem({ roll }: RollHistoryItemProps) {
       <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-2 mb-3">
         <div className={cn("flex items-center text-lg", getOutcomeStyles(roll.rollOutcomeState))}>
           <OutcomeIcon outcome={roll.rollOutcomeState} />
-          <span>{formatOutcomeText(roll.rollOutcomeState)}</span>
+          <span>{formatOutcomeText(roll.rollOutcomeState, roll.isCombatRoll)}</span>
           {roll.isCombatRoll && <Swords className="w-4 h-4 ml-2 text-red-500" />}
         </div>
         <div className="flex flex-wrap gap-x-3 gap-y-1 text-sm text-muted-foreground items-baseline">
