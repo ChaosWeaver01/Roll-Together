@@ -4,18 +4,20 @@ export function rollD10(): number {
   return Math.floor(Math.random() * 10) + 1;
 }
 
-// modifier is passed but not directly used in this function to determine the number of dice or their power status
-// based on the new rules. It is part of the Roll object and can be used for score calculation elsewhere.
+// modifier is passed and included in the Roll object, but does not affect dice quantity or power status here.
+// Dice generation rules:
+// - Skill Rank <= 0: 1 die, not a Power Die.
+// - Skill Rank 1: 3 dice; 1st die is a Power Die.
+// - Skill Rank 2-4: 'skillRank' dice; 1st die is a Power Die.
+// - Skill Rank 5+ (including 5-9): 'skillRank' dice; 1st and 3rd dice are Power Dice.
 export function performRoll(skillRank: number, modifier: number): DieRoll[] {
   let numDice: number;
 
   if (skillRank <= 0) {
-    numDice = 1; // For skill rank 0 or less, roll 1 die.
+    numDice = 1;
   } else if (skillRank === 1) {
-    numDice = 3; // Skill rank 1: 3 dice.
-  } else { // skillRank >= 2
-    // Skill Rank 2 - 4: number of dice equal to skill rank.
-    // Skill Rank 5 - 8 (and higher): number of dice equal to skill rank.
+    numDice = 3;
+  } else { // Covers skillRank >= 2
     numDice = skillRank;
   }
 
@@ -24,18 +26,14 @@ export function performRoll(skillRank: number, modifier: number): DieRoll[] {
     let currentDieIsPower = false;
 
     if (skillRank === 1) {
-      // For SR1 (3 dice), the 1st die is a Power Die.
-      // The "take the lowest" rule likely applies to result calculation.
       currentDieIsPower = (i === 0);
     } else if (skillRank >= 2 && skillRank <= 4) {
-      // Skill Rank 2 - 4: 1st die is always the Power Die.
       currentDieIsPower = (i === 0);
     } else if (skillRank >= 5) {
-      // Skill Rank 5 - 8 (and assuming higher ranks follow this): 1st and 3rd die are Power Dice.
-      // The 3rd die is at index 2. This is safe as for SR >= 5, numDice >= 5.
+      // Ensures for SR >= 5, numDice is at least 5, so index 2 is valid.
       currentDieIsPower = (i === 0 || i === 2);
     }
-    // For skillRank <= 0 (numDice is 1), currentDieIsPower remains false, so it's a non-power die.
+    // For skillRank <= 0 (where numDice is 1), currentDieIsPower remains false.
     
     results.push({
       value: rollD10(),
