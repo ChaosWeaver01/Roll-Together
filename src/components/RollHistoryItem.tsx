@@ -52,7 +52,7 @@ const formatOutcomeText = (outcome: RollOutcomeState): string => {
 
 export function RollHistoryItem({ roll }: RollHistoryItemProps) {
   const timeAgo = formatDistanceToNow(new Date(roll.timestamp), { addSuffix: true });
-  const totalRollValue = calculateRollTotal(roll);
+  const { total: totalRollValue, contributingDiceIndices } = calculateRollTotal(roll);
 
   return (
     <li className="bg-card p-4 rounded-lg shadow-md border border-border animate-new-roll-entry">
@@ -64,7 +64,6 @@ export function RollHistoryItem({ roll }: RollHistoryItemProps) {
         
         <div className="flex items-baseline gap-x-2 sm:gap-x-3">
           <span className="text-xs text-muted-foreground">{timeAgo}</span>
-          {/* Total roll value removed from here */}
         </div>
       </div>
       
@@ -95,11 +94,13 @@ export function RollHistoryItem({ roll }: RollHistoryItemProps) {
 
       <div className="flex flex-wrap items-center gap-2 mt-3">
         {roll.results.map((dieRoll, index) => (
-          <Dice key={index} roll={dieRoll} />
+          <Dice 
+            key={index} 
+            roll={dieRoll} 
+            isContributingToTotal={contributingDiceIndices.includes(index)}
+          />
         ))}
-        {/* Adding a visual separator like an equals sign */}
         <span className="text-xl sm:text-2xl font-bold text-muted-foreground mx-1">=</span>
-        {/* Total value displayed here */}
         <span 
           className="text-xl sm:text-2xl font-bold text-accent" 
           aria-label={`Total roll value: ${totalRollValue}`}

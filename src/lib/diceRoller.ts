@@ -10,16 +10,16 @@ export function performRoll(skillRank: number, modifier: number): DieRoll[] {
   let powerDieIndices: number[] = [];
 
   if (skillRank <= 0) {
-    numDice = 1; // Rolls 1 die, not a power die
+    numDice = 1; 
   } else if (skillRank === 1) {
     numDice = 3;
-    powerDieIndices = [0]; // 1st die is Power Die
+    powerDieIndices = [0]; 
   } else if (skillRank >= 2 && skillRank <= 4) {
     numDice = skillRank;
-    powerDieIndices = [0]; // 1st die is Power Die
-  } else { // Skill Rank 5+ (covers 5-9 and above)
+    powerDieIndices = [0]; 
+  } else { 
     numDice = skillRank;
-    powerDieIndices = [0, 2]; // 1st and 3rd die are Power Dice
+    powerDieIndices = [0, 2]; 
   }
 
   const results: DieRoll[] = [];
@@ -35,9 +35,14 @@ export function performRoll(skillRank: number, modifier: number): DieRoll[] {
 export function determineRollOutcome(diceResults: DieRoll[], criticalThreshold: number): RollOutcomeState {
   const powerDice = diceResults.filter(d => d.isPowerDie);
 
-  if (powerDice.length === 0) {
-    return 'normal';
+  if (powerDice.length === 0 && diceResults.length > 0) {
+    // Handle rolls like SR0 where no power dice are designated
+    // A single die is rolled, check its value against threshold if necessary, but typically SR0 doesn't crit/botch based on power die.
+    // For simplicity, if no power dice, it's 'normal'. This can be expanded if SR0 has special outcome rules.
+     return 'normal';
   }
+  if (powerDice.length === 0) return 'normal'; // If truly no dice, or no power dice to evaluate.
+
 
   const highestPowerDieValue = Math.max(...powerDice.map(d => d.value));
 
@@ -60,70 +65,83 @@ export function determineRollOutcome(diceResults: DieRoll[], criticalThreshold: 
   return 'normal';
 }
 
-export function calculateRollTotal(roll: Roll): number {
+export function calculateRollTotal(roll: Roll): { total: number; contributingDiceIndices: number[] } {
   const { results, skillRank, modifier } = roll;
+  let total = 0;
+  let contributingDiceIndices: number[] = [];
 
-  if (skillRank === 1) {
-    // For Skill Rank 1: 3 dice, sum of the two lowest values + modifier.
-    // performRoll ensures 3 dice for SR1.
+  if (skillRank <= 0) { // Skill Rank 0 or less
+    if (results.length > 0) {
+      total = results[0].value + modifier;
+      contributingDiceIndices = [0]; // The first (and only) die contributes
+    } else {
+      total = modifier; // Only modifier if no dice
+    }
+    return { total, contributingDiceIndices };
+  }
+
+  if (skillRank === 1) { // Skill Rank 1: 3 dice, sum of the two lowest values + modifier.
     if (results.length === 3) {
-      const sortedValues = results.map(d => d.value).sort((a, b) => a - b);
-      return sortedValues[0] + sortedValues[1] + modifier;
+      const indexedResults = results.map((die, index) => ({ ...die, originalIndex: index }));
+      indexedResults.sort((a, b) => a.value - b.value); // Sort by value
+      const usedDice = indexedResults.slice(0, 2);
+      total = usedDice.reduce((sum, die) => sum + die.value, 0) + modifier;
+      contributingDiceIndices = usedDice.map(d => d.originalIndex);
     } else {
       // Fallback if somehow not 3 dice, sum all and add modifier
-      return results.reduce((sum, die) => sum + die.value, 0) + modifier;
+      total = results.reduce((sum, die) => sum + die.value, 0) + modifier;
+      contributingDiceIndices = results.map((_, index) => index); // Mark all as contributing
     }
+    return { total, contributingDiceIndices };
   }
 
-  // For Skill Rank 0 or less: 1 die (not power), total is die value + modifier
-  if (skillRank <= 0) {
-    if (results.length > 0) {
-      return results[0].value + modifier;
+  // For Skill Ranks 2+: highest Power Die + highest Non-Power die + Modifier
+  let highestPowerDieValue = -1;
+  let highestPowerDieIndex = -1;
+  let highestNonPowerDieValue = -1;
+  let highestNonPowerDieIndex = -1;
+
+  results.forEach((die, index) => {
+    if (die.isPowerDie) {
+      if (die.value > highestPowerDieValue) {
+        highestPowerDieValue = die.value;
+        highestPowerDieIndex = index;
+      }
+    } else { // Non-Power Die
+      if (die.value > highestNonPowerDieValue) {
+        highestNonPowerDieValue = die.value;
+        highestNonPowerDieIndex = index;
+      }
     }
-    return modifier; // Only modifier if no dice (should not happen with performRoll)
+  });
+
+  let sumOfDice = 0;
+  if (highestPowerDieIndex !== -1) {
+    sumOfDice += highestPowerDieValue;
+    contributingDiceIndices.push(highestPowerDieIndex);
   }
-
-  // For other Skill Ranks (SR 2+): highest Power Die + highest Non-Power die + Modifier
-  const powerDiceValues = results.filter(d => d.isPowerDie).map(d => d.value);
-  const nonPowerDiceValues = results.filter(d => !d.isPowerDie).map(d => d.value);
-
-  let highestPowerDie = 0;
-  if (powerDiceValues.length > 0) {
-    highestPowerDie = Math.max(...powerDiceValues);
-  } else {
-    // If no power dice (e.g. SR0), but we already handled SR0.
-    // For SR > 1, performRoll should provide power dice.
-    // If for some reason there are no power dice, this component of sum is 0.
+  if (highestNonPowerDieIndex !== -1) {
+    sumOfDice += highestNonPowerDieValue;
+    contributingDiceIndices.push(highestNonPowerDieIndex);
   }
   
-  let highestNonPowerDie = 0;
-  if (nonPowerDiceValues.length > 0) {
-    highestNonPowerDie = Math.max(...nonPowerDiceValues);
-  } else {
-    // If only power dice are rolled (not standard by current performRoll for SR > 1)
-    // this component of sum is 0.
+  if (results.length > 0 && contributingDiceIndices.length === 0) {
+    // This case might occur if only one type of die is present (e.g. only power dice)
+    // and the rule strictly needs one of each.
+    // However, performRoll for SR >= 2 usually provides both types or multiple power dice.
+    // If only one type of die was rolled (e.g., SR2 with performRoll giving 1 power, 1 non-power, but one type somehow missing from results)
+    // let's ensure if results is not empty, at least something sensible happens.
+    // For now, sumOfDice remains as calculated. If it's 0 and results not empty, it means highestP/NP were not found or were 0.
   }
 
-  // If only power dice and no non-power dice, total is highest power + modifier
-  if (powerDiceValues.length > 0 && nonPowerDiceValues.length === 0) {
-    return highestPowerDie + modifier;
-  }
+  total = sumOfDice + modifier;
   
-  // If only non-power dice and no power dice (e.g. SR0 scenario handled above), total is highest non-power + modifier
-  if (nonPowerDiceValues.length > 0 && powerDiceValues.length === 0) {
-      return highestNonPowerDie + modifier;
-  }
-
-  // If neither (empty results), just return modifier
-  if (powerDiceValues.length === 0 && nonPowerDiceValues.length === 0 && results.length > 0) {
-    // if results has items but neither power nor non-power (should not happen with boolean isPowerDie)
-    // sum all dice as a last resort.
-     return results.reduce((sum, die) => sum + die.value, 0) + modifier;
-  }
-  if (results.length === 0){
-    return modifier;
+  // If no dice contributed (e.g. results was empty or all values were <= -1), 
+  // and total is just modifier, contributingDiceIndices should be empty.
+  if (results.length === 0) {
+    contributingDiceIndices = [];
   }
 
 
-  return highestPowerDie + highestNonPowerDie + modifier;
+  return { total, contributingDiceIndices };
 }
