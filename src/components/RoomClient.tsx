@@ -40,8 +40,8 @@ export function RoomClient({ roomId }: RoomClientProps) {
     }
   }, []);
 
-  const handleRoll = useCallback((nickname: string, skillRank: number, modifier: number, criticalThreshold: number) => {
-    const results = performRoll(skillRank, modifier);
+  const handleRoll = useCallback((nickname: string, diceCount: number, modifier: number, criticalThreshold: number) => { // Renamed skillRank to diceCount
+    const results = performRoll(diceCount, modifier); // Renamed skillRank to diceCount
     const rollOutcomeState = determineRollOutcome(results, criticalThreshold);
     
     const newRoll: Roll = {
@@ -49,7 +49,7 @@ export function RoomClient({ roomId }: RoomClientProps) {
       roomId,
       rollerNickname: nickname,
       timestamp: Date.now(),
-      skillRank,
+      diceCount, // Renamed from skillRank
       modifier,
       results,
       totalDiceRolled: results.length,

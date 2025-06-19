@@ -11,12 +11,12 @@ import { useToast } from "@/hooks/use-toast";
 
 interface PlayerInputProps {
   initialNickname: string;
-  onRoll: (nickname: string, skillRank: number, modifier: number, criticalThreshold: number) => void;
+  onRoll: (nickname: string, diceCount: number, modifier: number, criticalThreshold: number) => void;
 }
 
 export function PlayerInput({ initialNickname, onRoll }: PlayerInputProps) {
   const [nickname, setNickname] = useState(initialNickname);
-  const [skillRank, setSkillRank] = useState(1); // Default skill rank to 1
+  const [diceCount, setDiceCount] = useState(1); // Renamed from skillRank, default to 1
   const [modifier, setModifier] = useState(0);
   const [criticalThreshold, setCriticalThreshold] = useState(9);
   const { toast } = useToast();
@@ -25,14 +25,12 @@ export function PlayerInput({ initialNickname, onRoll }: PlayerInputProps) {
     setNickname(initialNickname);
   }, [initialNickname]);
 
-  const handleSkillRankChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleDiceCountChange = (e: React.ChangeEvent<HTMLInputElement>) => { // Renamed from handleSkillRankChange
     let value = parseInt(e.target.value, 10);
     if (isNaN(value)) {
-      value = 1; // Default to 1 if input is not a number
+      value = 1; 
     }
-    // Clamping the value directly in the handler can be an alternative
-    // but for now, validation on roll is sufficient with min/max attributes.
-    setSkillRank(value);
+    setDiceCount(value); // Renamed from setSkillRank
   };
 
   const handleRoll = () => {
@@ -44,10 +42,10 @@ export function PlayerInput({ initialNickname, onRoll }: PlayerInputProps) {
       });
       return;
     }
-    if (skillRank < 1 || skillRank > 9) {
+    if (diceCount < 1 || diceCount > 9) { // Renamed from skillRank
        toast({
-        title: "Invalid Skill Rank",
-        description: "Skill Rank must be between 1 and 9.",
+        title: "Invalid Dice Count", // Updated message
+        description: "Dice count must be between 1 and 9.", // Updated message
         variant: "destructive",
       });
       return;
@@ -60,7 +58,7 @@ export function PlayerInput({ initialNickname, onRoll }: PlayerInputProps) {
       });
       return;
     }
-    onRoll(nickname, skillRank, modifier, criticalThreshold);
+    onRoll(nickname, diceCount, modifier, criticalThreshold); // Renamed skillRank to diceCount
   };
 
   return (
@@ -87,14 +85,14 @@ export function PlayerInput({ initialNickname, onRoll }: PlayerInputProps) {
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="space-y-2">
-            <Label htmlFor="skill-rank" className="flex items-center text-muted-foreground">
-              <TrendingUp className="w-4 h-4 mr-2" /> Skill Rank
+            <Label htmlFor="dice-count" className="flex items-center text-muted-foreground"> {/* Renamed from skill-rank */}
+              <TrendingUp className="w-4 h-4 mr-2" /> Dice {/* Renamed label text */}
             </Label>
             <Input
-              id="skill-rank"
+              id="dice-count" // Renamed from skill-rank
               type="number"
-              value={skillRank}
-              onChange={handleSkillRankChange}
+              value={diceCount} // Renamed from skillRank
+              onChange={handleDiceCountChange} // Renamed handler
               min="1"
               max="9"
               className="bg-input placeholder:text-muted-foreground"

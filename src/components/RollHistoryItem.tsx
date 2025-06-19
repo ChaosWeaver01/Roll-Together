@@ -75,7 +75,7 @@ export function RollHistoryItem({ roll }: RollHistoryItemProps) {
         <div className="flex flex-wrap gap-x-3 gap-y-1 text-sm text-muted-foreground items-baseline">
           <div className="flex items-center bg-background/50 px-2 py-1 rounded">
             <Info className="w-3.5 h-3.5 mr-1.5" />
-            <span>Skill: {roll.skillRank}</span>
+            <span>Dice: {roll.diceCount}</span> {/* Renamed from Skill: {roll.skillRank} */}
           </div>
           <div className="flex items-center bg-background/50 px-2 py-1 rounded">
             <Info className="w-3.5 h-3.5 mr-1.5" />
@@ -83,7 +83,7 @@ export function RollHistoryItem({ roll }: RollHistoryItemProps) {
           </div>
           <div className="flex items-center bg-background/50 px-2 py-1 rounded">
             <BarChart3 className="w-3.5 h-3.5 mr-1.5" />
-            <span>Dice: {roll.totalDiceRolled}</span>
+            <span>Dice Rolled: {roll.totalDiceRolled}</span> {/* Clarified label from "Dice:" to "Dice Rolled:" */}
           </div>
           <div className="flex items-center bg-background/50 px-2 py-1 rounded">
             <Zap className="w-3.5 h-3.5 mr-1.5" />

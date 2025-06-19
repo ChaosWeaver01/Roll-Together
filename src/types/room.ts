@@ -11,7 +11,7 @@ export interface Roll {
   roomId: string;
   rollerNickname: string;
   timestamp: number;
-  skillRank: number;
+  diceCount: number; // Renamed from skillRank
   modifier: number;
   results: DieRoll[];
   totalDiceRolled: number;
