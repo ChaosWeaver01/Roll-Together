@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Dices, User, TrendingUp, Plus, Zap } from 'lucide-react'; // Zap for Critical Threshold
+import { Dices, User, TrendingUp, Plus, Zap } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
 
 interface PlayerInputProps {
@@ -16,20 +16,38 @@ interface PlayerInputProps {
 
 export function PlayerInput({ initialNickname, onRoll }: PlayerInputProps) {
   const [nickname, setNickname] = useState(initialNickname);
-  const [skillRank, setSkillRank] = useState(0);
+  const [skillRank, setSkillRank] = useState(1); // Default skill rank to 1
   const [modifier, setModifier] = useState(0);
-  const [criticalThreshold, setCriticalThreshold] = useState(9); // Default critical threshold
+  const [criticalThreshold, setCriticalThreshold] = useState(9);
   const { toast } = useToast();
 
   useEffect(() => {
     setNickname(initialNickname);
   }, [initialNickname]);
 
+  const handleSkillRankChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let value = parseInt(e.target.value, 10);
+    if (isNaN(value)) {
+      value = 1; // Default to 1 if input is not a number
+    }
+    // Clamping the value directly in the handler can be an alternative
+    // but for now, validation on roll is sufficient with min/max attributes.
+    setSkillRank(value);
+  };
+
   const handleRoll = () => {
     if (nickname.trim() === '') {
       toast({
         title: "Nickname Required",
         description: "Please enter a nickname before rolling.",
+        variant: "destructive",
+      });
+      return;
+    }
+    if (skillRank < 1 || skillRank > 9) {
+       toast({
+        title: "Invalid Skill Rank",
+        description: "Skill Rank must be between 1 and 9.",
         variant: "destructive",
       });
       return;
@@ -70,14 +88,15 @@ export function PlayerInput({ initialNickname, onRoll }: PlayerInputProps) {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="space-y-2">
             <Label htmlFor="skill-rank" className="flex items-center text-muted-foreground">
-              <TrendingUp className="w-4 h-4 mr-2" /> Skill Rank
+              <TrendingUp className="w-4 h-4 mr-2" /> Skill Rank (1-9)
             </Label>
             <Input
               id="skill-rank"
               type="number"
               value={skillRank}
-              onChange={(e) => setSkillRank(parseInt(e.target.value, 10) || 0)}
-              min="0"
+              onChange={handleSkillRankChange}
+              min="1"
+              max="9"
               className="bg-input placeholder:text-muted-foreground"
             />
           </div>
