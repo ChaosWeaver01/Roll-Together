@@ -1,24 +1,47 @@
 
-export interface DieRoll {
+export interface BaseDieRoll {
   value: number;
+}
+
+export interface SkillDieRoll extends BaseDieRoll {
   isPowerDie: boolean;
+}
+
+export interface GenericDieRoll extends BaseDieRoll {
+  dieType: string; // e.g., "d4", "d6", "d20"
 }
 
 export type RollOutcomeState = 'normal' | 'botch' | 'failure' | 'critical' | 'trueCritical';
 
-export interface Roll {
+export type RollType = 'skill' | 'generic';
+
+export interface BaseRoll {
   id: string;
   roomId: string;
   rollerNickname: string;
   timestamp: number;
-  diceCount: number;
   modifier: number;
-  results: DieRoll[];
-  totalDiceRolled: number;
+  rollType: RollType;
+}
+
+export interface SkillRoll extends BaseRoll {
+  rollType: 'skill';
+  diceCount: number; // Input parameter for skill roller logic
+  results: SkillDieRoll[]; // Actual D10s rolled based on diceCount
+  totalDiceRolled: number; // Count of SkillDieRoll in results
   criticalThreshold: number;
   rollOutcomeState: RollOutcomeState;
   isCombatRoll: boolean;
 }
+
+export interface GenericRoll extends BaseRoll {
+  rollType: 'generic';
+  diceRequests: Array<{ dieType: string; count: number }>;
+  results: GenericDieRoll[];
+  totalDiceRolled: number; // Count of GenericDieRoll in results
+}
+
+export type Roll = SkillRoll | GenericRoll;
 
 export interface Player {
   nickname: string;

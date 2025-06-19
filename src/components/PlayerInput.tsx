@@ -44,10 +44,10 @@ export function PlayerInput({ initialNickname, onRoll }: PlayerInputProps) {
       });
       return;
     }
-    if (diceCount < 1 || diceCount > 9) {
+    if (diceCount < 0 || diceCount > 9) { // Allow 0 for diceCount for specific skill roll logic
        toast({
-        title: "Invalid Dice Count",
-        description: "Dice count must be between 1 and 9.",
+        title: "Invalid Dice Input",
+        description: "Dice input value must be between 0 and 9.",
         variant: "destructive",
       });
       return;
@@ -88,14 +88,14 @@ export function PlayerInput({ initialNickname, onRoll }: PlayerInputProps) {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="space-y-2">
             <Label htmlFor="dice-count" className="flex items-center text-muted-foreground">
-              <TrendingUp className="w-4 h-4 mr-2" /> Dice
+              <TrendingUp className="w-4 h-4 mr-2" /> Dice (0-9)
             </Label>
             <Input
               id="dice-count"
               type="number"
               value={diceCount}
               onChange={handleDiceCountChange}
-              min="1"
+              min="0"
               max="9"
               className="bg-input placeholder:text-muted-foreground"
             />
@@ -144,7 +144,7 @@ export function PlayerInput({ initialNickname, onRoll }: PlayerInputProps) {
           aria-label="Roll the dice"
         >
           <Dices className="mr-2 h-6 w-6" />
-          Roll Dice!
+          Roll Skill Dice!
         </Button>
       </CardContent>
     </Card>

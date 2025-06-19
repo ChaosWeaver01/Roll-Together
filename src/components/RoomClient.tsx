@@ -6,10 +6,11 @@ import { Share2, ClipboardCopy, Home, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useRoomSync } from '@/hooks/useRoomSync';
 import { PlayerInput } from '@/components/PlayerInput';
+import { GenericDiceRoller } from '@/components/GenericDiceRoller';
 import { RollHistory } from '@/components/RollHistory';
-import { performRoll, determineRollOutcome } from '@/lib/diceRoller';
+import { performSkillRoll, performGenericRoll, determineRollOutcome } from '@/lib/diceRoller';
 import { generateId } from '@/lib/utils';
-import type { Roll } from '@/types/room';
+import type { Roll, SkillRoll, GenericRoll, SkillDieRoll, GenericDieRoll } from '@/types/room';
 import { useToast } from "@/hooks/use-toast";
 import Link from 'next/link';
 import {
@@ -17,8 +18,6 @@ import {
   Sidebar,
   SidebarContent,
   SidebarInset,
-  // SidebarHeader, // Removed
-  // SidebarTrigger, // Removed as it was part of SidebarHeader
 } from '@/components/ui/sidebar';
 
 
@@ -40,26 +39,50 @@ export function RoomClient({ roomId }: RoomClientProps) {
     }
   }, []);
 
-  const handleRoll = useCallback((nickname: string, diceCount: number, modifier: number, criticalThreshold: number, isCombatRoll: boolean) => {
-    const results = performRoll(diceCount, modifier);
+  const handleSkillRoll = useCallback((nickname: string, diceCount: number, modifier: number, criticalThreshold: number, isCombatRoll: boolean) => {
+    const results: SkillDieRoll[] = performSkillRoll(diceCount);
     const rollOutcomeState = determineRollOutcome(results, criticalThreshold);
     
-    const newRoll: Roll = {
+    const newRoll: SkillRoll = {
       id: generateId(),
+      rollType: 'skill',
       roomId,
       rollerNickname: nickname,
       timestamp: Date.now(),
-      diceCount,
+      diceCount, // This is the input diceCount for skill roller logic
       modifier,
       results,
-      totalDiceRolled: results.length,
+      totalDiceRolled: results.length, // Actual number of D10s rolled
       criticalThreshold,
       rollOutcomeState,
       isCombatRoll,
     };
     addRoll(newRoll);
-    localStorage.setItem('rt-nickname', nickname); 
+    if (nickname.trim()) {
+      localStorage.setItem('rt-nickname', nickname.trim());
+    }
   }, [roomId, addRoll]);
+
+  const handleGenericRoll = useCallback((nickname: string, diceRequests: Array<{ dieType: string; count: number }>, modifier: number) => {
+    const results: GenericDieRoll[] = performGenericRoll(diceRequests);
+    
+    const newRoll: GenericRoll = {
+      id: generateId(),
+      rollType: 'generic',
+      roomId,
+      rollerNickname: nickname,
+      timestamp: Date.now(),
+      diceRequests,
+      modifier,
+      results,
+      totalDiceRolled: results.length,
+    };
+    addRoll(newRoll);
+     if (nickname.trim()) {
+      localStorage.setItem('rt-nickname', nickname.trim());
+    }
+  }, [roomId, addRoll]);
+
 
   const copyRoomUrl = () => {
     navigator.clipboard.writeText(roomUrl)
@@ -90,8 +113,9 @@ export function RoomClient({ roomId }: RoomClientProps) {
   return (
     <SidebarProvider defaultOpen={true}>
       <Sidebar side="left" collapsible="icon" className="border-r bg-card">
-        <SidebarContent className="p-4">
-          <PlayerInput initialNickname={initialNickname} onRoll={handleRoll} />
+        <SidebarContent className="p-4 space-y-4">
+          <PlayerInput initialNickname={initialNickname} onRoll={handleSkillRoll} />
+          <GenericDiceRoller initialNickname={initialNickname} onRoll={handleGenericRoll} />
         </SidebarContent>
       </Sidebar>
 
@@ -145,4 +169,3 @@ export function RoomClient({ roomId }: RoomClientProps) {
     </SidebarProvider>
   );
 }
-
