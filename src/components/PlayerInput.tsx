@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect } from 'react';
@@ -5,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Dices, User, TrendingUp, PlusMinus } from 'lucide-react';
+import { Dices, User, TrendingUp, Plus } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
 
 interface PlayerInputProps {
@@ -72,7 +73,7 @@ export function PlayerInput({ initialNickname, onRoll }: PlayerInputProps) {
           </div>
           <div className="space-y-2">
             <Label htmlFor="modifier" className="flex items-center text-muted-foreground">
-              <PlusMinus className="w-4 h-4 mr-2" /> Modifier
+              <Plus className="w-4 h-4 mr-2" /> Modifier
             </Label>
             <Input
               id="modifier"
