@@ -1,11 +1,12 @@
+
 import type {NextConfig} from 'next';
 
 const nextConfig: NextConfig = {
   output: 'export', // Enable static HTML export
   // If your site is hosted at a subpath, e.g., https://your-username.github.io/your-repo-name/
   // Uncomment and set the basePath and assetPrefix below.
-  basePath: '/studio',
-  assetPrefix: '/studio/', // Note the trailing slash for assetPrefix
+  basePath: '/Roll-Together',
+  assetPrefix: '/Roll-Together/', // Note the trailing slash for assetPrefix
   typescript: {
     ignoreBuildErrors: true,
   },
