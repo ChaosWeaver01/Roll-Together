@@ -32,6 +32,7 @@ export function RoomClient({ roomId }: RoomClientProps) {
   const [currentNickname, setCurrentNickname] = useState('');
   const { toast } = useToast();
   const [roomUrl, setRoomUrl] = useState('');
+  const [currentYear, setCurrentYear] = useState<number | null>(null);
 
   const [isLeftPanelOpen, setIsLeftPanelOpen] = useState(true);
   const [isRightPanelOpen, setIsRightPanelOpen] = useState(false); 
@@ -46,6 +47,7 @@ export function RoomClient({ roomId }: RoomClientProps) {
       const storedNickname = localStorage.getItem('rt-nickname') || `Player${generateId().substring(0,4)}`;
       setCurrentNickname(storedNickname);
       setRoomUrl(window.location.href);
+      setCurrentYear(new Date().getFullYear());
 
       const panelStatesKey = `${LOCAL_STORAGE_PANEL_STATE_KEY_PREFIX}${roomId}`;
       const storedPanelStates = localStorage.getItem(panelStatesKey);
@@ -336,7 +338,7 @@ export function RoomClient({ roomId }: RoomClientProps) {
             </div>
             <RollHistory rolls={rolls} />
             <footer className="mt-12 text-center text-muted-foreground text-sm">
-              <p>&copy; {new Date().getFullYear()} Roll Together. May your rolls be mighty!</p>
+              <p>&copy; {currentYear || new Date().getFullYear()} Roll Together. May your rolls be mighty!</p>
             </footer>
           </div>
         </main>
