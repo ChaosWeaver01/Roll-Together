@@ -15,11 +15,11 @@ const getOutcomeStyles = (outcome: RollOutcomeState): string => {
     case 'botch':
       return 'text-destructive font-bold';
     case 'failure':
-      return 'text-orange-400 font-semibold'; // Consider theming this or ensuring orange-400 has AAA against card BG
+      return 'text-orange-700 font-semibold'; // Darker orange for AAA on light bg
     case 'critical':
-      return 'text-green-400 font-bold'; // Consider theming this or ensuring green-400 has AAA
+      return 'text-green-800 font-bold'; // Darker green for AAA on light bg
     case 'trueCritical':
-      return 'text-yellow-400 font-extrabold animate-pulse'; // Consider theming this or ensuring yellow-400 has AAA
+      return 'text-yellow-900 font-extrabold animate-pulse'; // Darker yellow for AAA on light bg
     default:
       return 'text-foreground';
   }
@@ -30,11 +30,11 @@ const OutcomeIcon = ({ outcome }: { outcome: RollOutcomeState }) => {
     case 'botch':
       return <ShieldAlert className="w-4 h-4 mr-1.5 text-destructive" />;
     case 'failure':
-      return <AlertTriangle className="w-4 h-4 mr-1.5 text-orange-400" />; // Theme this
+      return <AlertTriangle className="w-4 h-4 mr-1.5 text-orange-700" />; // Darker orange
     case 'critical':
-      return <Award className="w-4 h-4 mr-1.5 text-green-400" />; // Theme this
+      return <Award className="w-4 h-4 mr-1.5 text-green-800" />; // Darker green
     case 'trueCritical':
-      return <Sparkles className="w-4 h-4 mr-1.5 text-yellow-400" />; // Theme this
+      return <Sparkles className="w-4 h-4 mr-1.5 text-yellow-900" />; // Darker yellow
     default:
       return null;
   }

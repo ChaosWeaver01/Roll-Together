@@ -9,98 +9,51 @@ body {
 
 @layer base {
   :root {
-    --background: 270 80% 4%; /* #0A0514 Very Dark Purple/Black */
-    --foreground: 270 15% 96%; /* #F3F2F7 Very Light Gray */
+    --background: 0 0% 98%; /* #FAF9F7 Very Light Gray */
+    --foreground: 0 0% 10%; /* #1A1A1A Very Dark Gray */
 
-    --card: 270 60% 7%; /* #10071C Dark Purple */
-    --card-foreground: 270 15% 96%; /* #F3F2F7 */
+    --card: 0 0% 100%; /* #FFFFFF White */
+    --card-foreground: 0 0% 10%; /* #1A1A1A */
 
-    --popover: 270 70% 5%; /* #0D041A Darker Purple */
-    --popover-foreground: 270 15% 96%; /* #F3F2F7 */
+    --popover: 0 0% 100%; /* #FFFFFF White */
+    --popover-foreground: 0 0% 10%; /* #1A1A1A */
 
-    --primary: 240 60% 25%; /* #191966 Dark Blue/Indigo */
-    --primary-foreground: 240 100% 97%; /* #F0F0FD Very Light Blue/Lavender */
+    --primary: 270 100% 25%; /* #4B0082 Dark Indigo (PRD) */
+    --primary-foreground: 270 100% 95%; /* #EDDFFF Very Light Lavender */
 
-    --secondary: 220 50% 30%; /* #263973 Medium Dark Blue */
-    --secondary-foreground: 270 15% 96%; /* #F3F2F7 */
+    --secondary: 270 50% 85%; /* #CED0F2 Light Lavender/Indigo */
+    --secondary-foreground: 270 50% 20%; /* #262659 Dark Indigo for text on secondary */
 
-    --muted: 270 15% 25%; /* #3A3641 Dark Grayish Purple */
-    --muted-foreground: 270 10% 85%; /* #D6D5D9 Light Grayish Purple */
+    --muted: 0 0% 90%; /* #E5E5E5 Light Gray */
+    --muted-foreground: 0 0% 40%; /* #666666 Medium-dark Gray */
 
-    --accent: 220 50% 30%; /* #263973 Medium Dark Blue */
-    --accent-foreground: 270 15% 96%; /* #F3F2F7 */
+    --accent: 280 88% 70%; /* #C777F1 Bright Violet (PRD) */
+    --accent-foreground: 280 10% 15%; /* #2C2036 Dark purple/gray for text on accent */
 
-    --destructive: 0 70% 30%; /* #831818 Dark Red */
-    --destructive-foreground: 270 15% 96%; /* #F3F2F7 */
+    --destructive: 0 70% 45%; /* #C73030 Noticeable Red */
+    --destructive-foreground: 0 0% 100%; /* #FFFFFF White text on destructive */
 
-    --border: 270 20% 20%; /* #332D3B Grayish Purple Border */
-    --input: 270 30% 10%; /* #171120 Dark Purple Input BG */
-    --ring: 220 70% 60%; /* #5C85E0 Bright Blue Ring */
+    --border: 0 0% 85%; /* #D9D9D9 Medium Light Gray Border */
+    --input: 0 0% 95%; /* #F2F2F2 Very Light Gray Input BG */
+    --ring: 270 100% 50%; /* #8000FF Bright Purple Ring (was blue) */
 
-    --chart-1: 190 70% 50%; /* #29B8D4 Bright Cyan */
-    --chart-2: 30 90% 55%; /* #F9861B Bright Orange */
-    --chart-3: 120 50% 50%; /* #40BF40 Green */
-    --chart-4: 280 60% 65%; /* #A37ADF Purple */
-    --chart-5: 0 50% 60%; /* #D96B6B Reddish-Pink */
+    --chart-1: 190 70% 40%; /* #208599 Darker Cyan */
+    --chart-2: 30 90% 50%; /* #F97300 Darker Orange */
+    --chart-3: 120 50% 40%; /* #339933 Darker Green */
+    --chart-4: 280 60% 50%; /* #9932CC Darker Purple */
+    --chart-5: 0 50% 50%; /* #CC3333 Darker Reddish-Pink */
 
     --radius: 0.5rem;
 
-    /* Specific sidebar theming based on main theme */
-    --sidebar-background: 270 70% 6%; /* #0E0618 Slightly darker than main background */
-    --sidebar-foreground: 270 15% 96%; /* #F3F2F7 */
-    --sidebar-primary: 240 60% 25%; /* #191966 */
-    --sidebar-primary-foreground: 240 100% 97%; /* #F0F0FD */
-    --sidebar-accent: 220 50% 30%; /* #263973 */
-    --sidebar-accent-foreground: 270 15% 96%; /* #F3F2F7 */
-    --sidebar-border: 270 20% 25%; /* #3A3641 */
-    --sidebar-ring: 220 70% 60%; /* #5C85E0 */
-  }
-
-  .dark {
-    --background: 270 80% 4%;
-    --foreground: 270 15% 96%;
-
-    --card: 270 60% 7%;
-    --card-foreground: 270 15% 96%;
-
-    --popover: 270 70% 5%;
-    --popover-foreground: 270 15% 96%;
-
-    --primary: 240 60% 25%;
-    --primary-foreground: 240 100% 97%;
-
-    --secondary: 220 50% 30%;
-    --secondary-foreground: 270 15% 96%;
-
-    --muted: 270 15% 25%;
-    --muted-foreground: 270 10% 85%;
-
-    --accent: 220 50% 30%;
-    --accent-foreground: 270 15% 96%;
-
-    --destructive: 0 70% 30%;
-    --destructive-foreground: 270 15% 96%;
-
-    --border: 270 20% 20%;
-    --input: 270 30% 10%;
-    --ring: 220 70% 60%;
-
-    --chart-1: 190 70% 50%;
-    --chart-2: 30 90% 55%;
-    --chart-3: 120 50% 50%;
-    --chart-4: 280 60% 65%;
-    --chart-5: 0 50% 60%;
-    
-    --radius: 0.5rem;
-
-    --sidebar-background: 270 70% 6%;
-    --sidebar-foreground: 270 15% 96%;
-    --sidebar-primary: 240 60% 25%;
-    --sidebar-primary-foreground: 240 100% 97%;
-    --sidebar-accent: 220 50% 30%;
-    --sidebar-accent-foreground: 270 15% 96%;
-    --sidebar-border: 270 20% 25%;
-    --sidebar-ring: 220 70% 60%;
+    /* Specific sidebar theming for light theme */
+    --sidebar-background: 0 0% 96%; /* #F5F5F5 Slightly off-white */
+    --sidebar-foreground: 0 0% 10%; /* #1A1A1A */
+    --sidebar-primary: 270 100% 25%; /* #4B0082 */
+    --sidebar-primary-foreground: 270 100% 95%; /* #EDDFFF */
+    --sidebar-accent: 280 88% 70%; /* #C777F1 */
+    --sidebar-accent-foreground: 280 10% 15%; /* #2C2036 */
+    --sidebar-border: 0 0% 80%; /* #CCCCCC */
+    --sidebar-ring: 270 100% 50%; /* #8000FF */
   }
 }
 
