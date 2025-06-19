@@ -51,10 +51,9 @@ const formatOutcomeText = (outcome: RollOutcomeState, isCombatRoll: boolean): st
     case 'trueCritical':
       return 'TRUE CRITICAL!';
     case 'normal':
-      return isCombatRoll ? 'Combat Action' : 'Normal Action';
+      return 'Standard Action';
     default:
-      // Should not be reached if RollOutcomeState is exhaustive
-      return isCombatRoll ? 'Combat Action' : 'Normal Action';
+      return 'Standard Action';
   }
 }
 
