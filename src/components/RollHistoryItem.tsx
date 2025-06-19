@@ -66,29 +66,32 @@ export function RollHistoryItem({ roll }: RollHistoryItemProps) {
     <li className="bg-card p-4 rounded-lg shadow-md border border-border animate-new-roll-entry">
       {/* Conditional Header Section */}
       {roll.rollType === 'skill' ? (
-        // New Consolidated Header for Skill Rolls
-        <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1 mb-3">
-          <div className="flex items-center">
-            <User className="w-5 h-5 mr-2 text-primary" />
-            <span className="font-semibold text-lg text-primary">{roll.rollerNickname || 'Anonymous'}</span>
+        <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1 mb-3">
+          <div className="flex items-baseline gap-x-3"> {/* Left-aligned group */}
+            <div className="flex items-center">
+              <User className="w-5 h-5 mr-2 text-primary" />
+              <span className="font-semibold text-lg text-primary">{roll.rollerNickname || 'Anonymous'}</span>
+            </div>
+            <div className={cn(
+              "flex items-center text-lg",
+              getOutcomeStyles((roll as SkillRoll).rollOutcomeState)
+            )}>
+              <OutcomeIcon outcome={(roll as SkillRoll).rollOutcomeState} />
+              <span>{formatOutcomeText((roll as SkillRoll).rollOutcomeState, (roll as SkillRoll).isCombatRoll)}</span>
+              {(roll as SkillRoll).isCombatRoll && <Swords className="w-4 h-4 ml-1.5 text-destructive" />}
+            </div>
           </div>
-          <div className={cn(
-            "flex items-center text-lg",
-            getOutcomeStyles((roll as SkillRoll).rollOutcomeState)
-          )}>
-            <OutcomeIcon outcome={(roll as SkillRoll).rollOutcomeState} />
-            <span>{formatOutcomeText((roll as SkillRoll).rollOutcomeState, (roll as SkillRoll).isCombatRoll)}</span>
-            {(roll as SkillRoll).isCombatRoll && <Swords className="w-4 h-4 ml-1.5 text-destructive" />}
+          <div className="flex items-baseline gap-x-3"> {/* Right-aligned group */}
+            <div className="flex items-center text-sm text-muted-foreground bg-background/50 px-2 py-1 rounded">
+              <BarChart3 className="w-3.5 h-3.5 mr-1.5" />
+              <span>Dice Rolled: {(roll as SkillRoll).totalDiceRolled}</span>
+            </div>
+            <div className="flex items-center text-sm text-muted-foreground bg-background/50 px-2 py-1 rounded">
+              <Zap className="w-3.5 h-3.5 mr-1.5" />
+              <span>Crit On: {(roll as SkillRoll).criticalThreshold}+</span>
+            </div>
+            <span className="text-xs text-muted-foreground">{timeAgo}</span>
           </div>
-          <div className="flex items-center text-sm text-muted-foreground bg-background/50 px-2 py-1 rounded">
-            <BarChart3 className="w-3.5 h-3.5 mr-1.5" />
-            <span>Dice Rolled: {(roll as SkillRoll).totalDiceRolled}</span>
-          </div>
-          <div className="flex items-center text-sm text-muted-foreground bg-background/50 px-2 py-1 rounded">
-            <Zap className="w-3.5 h-3.5 mr-1.5" />
-            <span>Crit On: {(roll as SkillRoll).criticalThreshold}+</span>
-          </div>
-          <span className="text-xs text-muted-foreground">{timeAgo}</span>
         </div>
       ) : (
         // Existing Header for Generic Rolls
