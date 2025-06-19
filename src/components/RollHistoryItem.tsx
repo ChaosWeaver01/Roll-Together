@@ -109,7 +109,7 @@ export function RollHistoryItem({ roll }: RollHistoryItemProps) {
         </div>
         <span className="text-xl sm:text-2xl font-bold text-muted-foreground mx-1">=</span>
         <span 
-          className="text-xl sm:text-2xl font-bold text-accent" 
+          className="text-3xl sm:text-4xl font-bold text-accent" 
           aria-label={`Total roll value: ${totalRollValue}`}
         >
           {totalRollValue}
