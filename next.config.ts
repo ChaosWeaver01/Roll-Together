@@ -1,7 +1,11 @@
 import type {NextConfig} from 'next';
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  output: 'export', // Enable static HTML export
+  // If your site is hosted at a subpath, e.g., https://your-username.github.io/your-repo-name/
+  // Uncomment and set the basePath and assetPrefix below.
+  // basePath: '/your-repo-name',
+  // assetPrefix: '/your-repo-name/', // Note the trailing slash for assetPrefix
   typescript: {
     ignoreBuildErrors: true,
   },
@@ -9,6 +13,7 @@ const nextConfig: NextConfig = {
     ignoreDuringBuilds: true,
   },
   images: {
+    unoptimized: true, // Required for static export as next/image optimization needs a server
     remotePatterns: [
       {
         protocol: 'https',
