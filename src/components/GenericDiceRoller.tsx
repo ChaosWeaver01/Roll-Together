@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Dices, Plus, RotateCcw, Trash2, Undo2 } from 'lucide-react';
+import { Dices, Plus, RotateCcw, Undo2 } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
 import { Badge } from '@/components/ui/badge';
 
@@ -111,27 +111,28 @@ export function GenericDiceRoller({ onRoll }: GenericDiceRollerProps) {
           </div>
         </div>
         
-        <div className="space-y-2">
-          <Label htmlFor="generic-modifier" className="flex items-center text-muted-foreground">
-            <Plus className="w-4 h-4 mr-2" /> Modifier
-          </Label>
-          <Input
-            id="generic-modifier"
-            type="number"
-            value={modifier}
-            onChange={(e) => setModifier(parseInt(e.target.value, 10) || 0)}
-            className="bg-input placeholder:text-muted-foreground"
-          />
+        <div className="flex items-end space-x-4">
+          <div className="flex-grow space-y-2">
+            <Label htmlFor="generic-modifier" className="flex items-center text-muted-foreground">
+              <Plus className="w-4 h-4 mr-2" /> Modifier
+            </Label>
+            <Input
+              id="generic-modifier"
+              type="number"
+              value={modifier}
+              onChange={(e) => setModifier(parseInt(e.target.value, 10) || 0)}
+              className="bg-input placeholder:text-muted-foreground"
+            />
+          </div>
+          <Button
+            onClick={handleRoll}
+            className="bg-primary hover:bg-primary/90 text-primary-foreground text-base py-2 px-6 rounded-lg shadow-md transition-transform hover:scale-105"
+            aria-label="Roll selected generic dice"
+          >
+            <Dices className="mr-2 h-5 w-5" />
+            Roll
+          </Button>
         </div>
-
-        <Button
-          onClick={handleRoll}
-          className="w-full bg-primary hover:bg-primary/90 text-primary-foreground text-lg py-6 rounded-lg shadow-lg transition-transform hover:scale-105"
-          aria-label="Roll selected generic dice"
-        >
-          <Dices className="mr-2 h-6 w-6" />
-          Roll Generic Dice
-        </Button>
       </CardContent>
     </Card>
   );
