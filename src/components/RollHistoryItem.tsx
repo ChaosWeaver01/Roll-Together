@@ -41,16 +41,20 @@ const OutcomeIcon = ({ outcome }: { outcome: RollOutcomeState }) => {
 };
 
 const formatOutcomeText = (outcome: RollOutcomeState, isCombatRoll: boolean): string => {
-  if (outcome === 'normal' && isCombatRoll) {
-    return 'Combat Action';
-  }
   switch (outcome) {
-    case 'botch': return 'Botch!';
-    case 'failure': return 'Failure';
-    case 'critical': return 'Critical!';
-    case 'trueCritical': return 'TRUE CRITICAL!';
-    case 'normal': return 'Normal Roll';
-    default: return 'Normal Roll';
+    case 'botch':
+      return 'Botch!';
+    case 'failure':
+      return 'Failure';
+    case 'critical':
+      return 'Critical!';
+    case 'trueCritical':
+      return 'TRUE CRITICAL!';
+    case 'normal':
+      return isCombatRoll ? 'Combat Action' : 'Normal Action';
+    default:
+      // Should not be reached if RollOutcomeState is exhaustive
+      return isCombatRoll ? 'Combat Action' : 'Normal Action';
   }
 }
 
