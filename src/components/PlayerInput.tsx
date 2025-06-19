@@ -68,7 +68,7 @@ export function PlayerInput({ initialNickname, onRoll }: PlayerInputProps) {
       <CardHeader>
         <CardTitle className="font-headline text-2xl flex items-center">
           <Dices className="w-6 h-6 mr-2 text-primary" />
-          Your Turn
+          Skill Roller
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-6">

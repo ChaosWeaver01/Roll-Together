@@ -91,7 +91,7 @@ export function RoomClient({ roomId }: RoomClientProps) {
     <SidebarProvider defaultOpen={true}>
       <Sidebar side="left" collapsible="icon" className="border-r bg-card">
         <SidebarHeader className="p-4 flex justify-between items-center border-b">
-          <h2 className="font-headline text-xl text-primary group-data-[state=collapsed]:hidden">Your Turn</h2>
+          <h2 className="font-headline text-xl text-primary group-data-[state=collapsed]:hidden">Skill Roller</h2>
           <SidebarTrigger className="group-data-[state=expanded]:hidden" />
         </SidebarHeader>
         <SidebarContent className="p-4">
