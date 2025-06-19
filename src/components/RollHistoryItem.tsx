@@ -2,7 +2,7 @@
 import type { Roll, RollOutcomeState } from '@/types/room';
 import { Dice } from '@/components/Dice';
 import { formatDistanceToNow } from 'date-fns';
-import { User, Info, BarChart3, AlertTriangle, Zap, ShieldAlert, Award, Sparkles } from 'lucide-react';
+import { User, BarChart3, AlertTriangle, Zap, ShieldAlert, Award, Sparkles } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { calculateRollTotal } from '@/lib/diceRoller';
 
@@ -74,10 +74,6 @@ export function RollHistoryItem({ roll }: RollHistoryItemProps) {
         </div>
         <div className="flex flex-wrap gap-x-3 gap-y-1 text-sm text-muted-foreground items-baseline">
           <div className="flex items-center bg-background/50 px-2 py-1 rounded">
-            <Info className="w-3.5 h-3.5 mr-1.5" />
-            <span>Mod: {roll.modifier >= 0 ? `+${roll.modifier}` : roll.modifier}</span>
-          </div>
-          <div className="flex items-center bg-background/50 px-2 py-1 rounded">
             <BarChart3 className="w-3.5 h-3.5 mr-1.5" />
             <span>Dice Rolled: {roll.totalDiceRolled}</span>
           </div>
@@ -96,6 +92,12 @@ export function RollHistoryItem({ roll }: RollHistoryItemProps) {
             isContributingToTotal={contributingDiceIndices.includes(index)}
           />
         ))}
+        <div 
+          className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-card border border-border text-foreground text-lg sm:text-xl font-semibold shadow-sm mx-1"
+          aria-label={`Modifier: ${roll.modifier >= 0 ? `+${roll.modifier}` : roll.modifier}`}
+        >
+          {roll.modifier >= 0 ? `+${roll.modifier}` : roll.modifier}
+        </div>
         <span className="text-xl sm:text-2xl font-bold text-muted-foreground mx-1">=</span>
         <span 
           className="text-xl sm:text-2xl font-bold text-accent" 
