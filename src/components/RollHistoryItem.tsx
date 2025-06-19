@@ -2,7 +2,7 @@
 import type { Roll, RollOutcomeState } from '@/types/room';
 import { Dice } from '@/components/Dice';
 import { formatDistanceToNow } from 'date-fns';
-import { User, BarChart3, AlertTriangle, Zap, ShieldAlert, Award, Sparkles } from 'lucide-react';
+import { User, BarChart3, AlertTriangle, Zap, ShieldAlert, Award, Sparkles, Swords } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { calculateRollTotal } from '@/lib/diceRoller';
 
@@ -71,6 +71,7 @@ export function RollHistoryItem({ roll }: RollHistoryItemProps) {
         <div className={cn("flex items-center text-lg", getOutcomeStyles(roll.rollOutcomeState))}>
           <OutcomeIcon outcome={roll.rollOutcomeState} />
           <span>{formatOutcomeText(roll.rollOutcomeState)}</span>
+          {roll.isCombatRoll && <Swords className="w-4 h-4 ml-2 text-red-500" />}
         </div>
         <div className="flex flex-wrap gap-x-3 gap-y-1 text-sm text-muted-foreground items-baseline">
           <div className="flex items-center bg-background/50 px-2 py-1 rounded">

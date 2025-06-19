@@ -2,7 +2,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from 'react';
-import { Share2, ClipboardCopy, Home, Trash2 } from 'lucide-react';
+import { Share2, ClipboardCopy, Home, Trash2, Swords } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useRoomSync } from '@/hooks/useRoomSync';
 import { PlayerInput } from '@/components/PlayerInput';
@@ -40,8 +40,8 @@ export function RoomClient({ roomId }: RoomClientProps) {
     }
   }, []);
 
-  const handleRoll = useCallback((nickname: string, diceCount: number, modifier: number, criticalThreshold: number) => { // Renamed skillRank to diceCount
-    const results = performRoll(diceCount, modifier); // Renamed skillRank to diceCount
+  const handleRoll = useCallback((nickname: string, diceCount: number, modifier: number, criticalThreshold: number, isCombatRoll: boolean) => {
+    const results = performRoll(diceCount, modifier);
     const rollOutcomeState = determineRollOutcome(results, criticalThreshold);
     
     const newRoll: Roll = {
@@ -49,12 +49,13 @@ export function RoomClient({ roomId }: RoomClientProps) {
       roomId,
       rollerNickname: nickname,
       timestamp: Date.now(),
-      diceCount, // Renamed from skillRank
+      diceCount,
       modifier,
       results,
       totalDiceRolled: results.length,
       criticalThreshold,
       rollOutcomeState,
+      isCombatRoll,
     };
     addRoll(newRoll);
     localStorage.setItem('rt-nickname', nickname); 

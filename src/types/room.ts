@@ -11,12 +11,13 @@ export interface Roll {
   roomId: string;
   rollerNickname: string;
   timestamp: number;
-  diceCount: number; // Renamed from skillRank
+  diceCount: number;
   modifier: number;
   results: DieRoll[];
   totalDiceRolled: number;
   criticalThreshold: number;
   rollOutcomeState: RollOutcomeState;
+  isCombatRoll: boolean;
 }
 
 export interface Player {
