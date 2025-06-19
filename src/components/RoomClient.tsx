@@ -99,6 +99,22 @@ export function RoomClient({ roomId }: RoomClientProps) {
         </SidebarContent>
       </Sidebar>
 
+      <Sidebar side="right" collapsible="icon" className="border-l bg-card">
+        <SidebarHeader className="p-4 flex justify-between items-center border-b">
+          <h2 className="font-headline text-xl text-primary group-data-[state=collapsed]:hidden">Macros</h2>
+          <SidebarTrigger className="group-data-[state=expanded]:hidden" />
+        </SidebarHeader>
+        <SidebarContent className="p-4">
+          <Card className="h-full">
+            <CardContent className="h-full flex flex-col items-center justify-center text-muted-foreground">
+              <Archive className="w-16 h-16 mb-4 text-primary/50" />
+              <p className="text-lg">Macro management coming soon!</p>
+              <p className="text-sm">Define your favorite rolls here.</p>
+            </CardContent>
+          </Card>
+        </SidebarContent>
+      </Sidebar>
+
       <SidebarInset>
         <div className="flex flex-col min-h-screen">
           <div className="container mx-auto py-8 px-4 flex flex-col grow">
@@ -130,27 +146,14 @@ export function RoomClient({ roomId }: RoomClientProps) {
               </div>
             </header>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 flex-grow">
-              <div className="lg:col-span-1 bg-card/80 p-6 rounded-xl shadow-xl border border-border">
-                <div className="flex justify-between items-center mb-6">
-                  <h2 className="font-headline text-3xl text-primary">Roll History</h2>
-                  <Button variant="outline" onClick={handleClearHistory} aria-label="Clear roll history">
-                    <Trash2 className="w-4 h-4 mr-2" /> Clear History
-                  </Button>
-                </div>
-                <RollHistory rolls={rolls} />
+            <div className="flex-grow bg-card/80 p-6 rounded-xl shadow-xl border border-border">
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="font-headline text-3xl text-primary">Roll History</h2>
+                <Button variant="outline" onClick={handleClearHistory} aria-label="Clear roll history">
+                  <Trash2 className="w-4 h-4 mr-2" /> Clear History
+                </Button>
               </div>
-
-              <div className="lg:col-span-1 bg-card/80 p-6 rounded-xl shadow-xl border border-border">
-                <h2 className="font-headline text-3xl text-primary mb-6">Macros</h2>
-                <Card className="h-full">
-                  <CardContent className="h-full flex flex-col items-center justify-center text-muted-foreground">
-                    <Archive className="w-16 h-16 mb-4 text-primary/50" />
-                    <p className="text-lg">Macro management coming soon!</p>
-                    <p className="text-sm">Define your favorite rolls here.</p>
-                  </CardContent>
-                </Card>
-              </div>
+              <RollHistory rolls={rolls} />
             </div>
             
             <footer className="mt-12 text-center text-muted-foreground text-sm">
@@ -162,3 +165,4 @@ export function RoomClient({ roomId }: RoomClientProps) {
     </SidebarProvider>
   );
 }
+
