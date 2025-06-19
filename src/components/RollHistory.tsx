@@ -18,7 +18,7 @@ export function RollHistory({ rolls }: RollHistoryProps) {
   }
 
   return (
-    <ScrollArea className="h-[400px] sm:h-[500px] w-full pr-4 rounded-md">
+    <ScrollArea className="h-[600px] sm:h-[800px] w-full pr-4 rounded-md">
       <ul className="space-y-4">
         {rolls.map((roll) => (
           <RollHistoryItem key={roll.id} roll={roll} />
