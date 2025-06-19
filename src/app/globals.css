@@ -9,51 +9,51 @@ body {
 
 @layer base {
   :root {
-    --background: 0 0% 98%; /* #FAF9F7 Very Light Gray */
-    --foreground: 0 0% 10%; /* #1A1A1A Very Dark Gray */
+    --background: 40 75% 96%; /* Light Parchment (#FDF9F0) */
+    --foreground: 30 30% 15%; /* Very Dark Brown (#3A312A) */
 
-    --card: 0 0% 100%; /* #FFFFFF White */
-    --card-foreground: 0 0% 10%; /* #1A1A1A */
+    --card: 40 50% 98%; /* Slightly Whiter Parchment (#FCFAF7) */
+    --card-foreground: 30 30% 15%; /* Very Dark Brown */
 
-    --popover: 0 0% 100%; /* #FFFFFF White */
-    --popover-foreground: 0 0% 10%; /* #1A1A1A */
+    --popover: 35 60% 97%; /* Off-White Parchment (#FBF8F4) */
+    --popover-foreground: 30 30% 15%; /* Very Dark Brown */
 
-    --primary: 270 100% 25%; /* #4B0082 Dark Indigo (PRD) */
-    --primary-foreground: 270 100% 95%; /* #EDDFFF Very Light Lavender */
+    --primary: 0 45% 38%; /* Deep Red (#933A3A) */
+    --primary-foreground: 40 75% 96%; /* Light Parchment */
 
-    --secondary: 270 50% 85%; /* #CED0F2 Light Lavender/Indigo */
-    --secondary-foreground: 270 50% 20%; /* #262659 Dark Indigo for text on secondary */
+    --secondary: 30 25% 80%; /* Muted Brown-Gray (#D4CCC3) */
+    --secondary-foreground: 30 30% 12%; /* Darker Brown for text on secondary */
 
-    --muted: 0 0% 90%; /* #E5E5E5 Light Gray */
-    --muted-foreground: 0 0% 40%; /* #666666 Medium-dark Gray */
+    --muted: 40 30% 90%; /* Lighter Parchment/Gray (#EDEAE6) */
+    --muted-foreground: 30 25% 35%; /* Medium-Dark Brown (#726961) */
 
-    --accent: 280 88% 70%; /* #C777F1 Bright Violet (PRD) */
-    --accent-foreground: 280 10% 15%; /* #2C2036 Dark purple/gray for text on accent */
+    --accent: 35 55% 40%; /* Burnished Gold/Bronze (#A1743F) */
+    --accent-foreground: 30 30% 10%; /* Even Darker Brown for text on accent */
 
-    --destructive: 0 70% 45%; /* #C73030 Noticeable Red */
-    --destructive-foreground: 0 0% 100%; /* #FFFFFF White text on destructive */
+    --destructive: 0 60% 45%; /* Strong D&D Red (#C73030) */
+    --destructive-foreground: 40 75% 96%; /* Light Parchment text on destructive */
 
-    --border: 0 0% 85%; /* #D9D9D9 Medium Light Gray Border */
-    --input: 0 0% 95%; /* #F2F2F2 Very Light Gray Input BG */
-    --ring: 270 100% 50%; /* #8000FF Bright Purple Ring (was blue) */
+    --border: 35 25% 75%; /* Muted Brownish Gray Border (#CEC8BF) */
+    --input: 40 40% 92%; /* Slightly Darker Parchment Input BG (#F2EFEA) */
+    --ring: 0 45% 45%; /* Brighter Primary Red for Ring (#A73E3E) */
 
-    --chart-1: 190 70% 40%; /* #208599 Darker Cyan */
-    --chart-2: 30 90% 50%; /* #F97300 Darker Orange */
-    --chart-3: 120 50% 40%; /* #339933 Darker Green */
-    --chart-4: 280 60% 50%; /* #9932CC Darker Purple */
-    --chart-5: 0 50% 50%; /* #CC3333 Darker Reddish-Pink */
+    --chart-1: 15 50% 45%;  /* Terracotta Red */
+    --chart-2: 90 35% 40%;  /* Olive Green */
+    --chart-3: 210 30% 50%; /* Slate Blue */
+    --chart-4: 30 40% 55%;  /* Muted Orange */
+    --chart-5: 0 30% 50%;   /* Desaturated Red */
 
     --radius: 0.5rem;
 
-    /* Specific sidebar theming for light theme */
-    --sidebar-background: 0 0% 96%; /* #F5F5F5 Slightly off-white */
-    --sidebar-foreground: 0 0% 10%; /* #1A1A1A */
-    --sidebar-primary: 270 100% 25%; /* #4B0082 */
-    --sidebar-primary-foreground: 270 100% 95%; /* #EDDFFF */
-    --sidebar-accent: 280 88% 70%; /* #C777F1 */
-    --sidebar-accent-foreground: 280 10% 15%; /* #2C2036 */
-    --sidebar-border: 0 0% 80%; /* #CCCCCC */
-    --sidebar-ring: 270 100% 50%; /* #8000FF */
+    /* Specific sidebar theming for light D&D theme */
+    --sidebar-background: 35 50% 92%; /* Slightly Darker Parchment for Sidebar (#F2EFEA) */
+    --sidebar-foreground: 30 30% 15%; /* Very Dark Brown */
+    --sidebar-primary: 0 45% 38%; /* Deep Red */
+    --sidebar-primary-foreground: 40 75% 96%; /* Light Parchment */
+    --sidebar-accent: 35 55% 40%; /* Burnished Gold/Bronze */
+    --sidebar-accent-foreground: 30 30% 10%; /* Even Darker Brown */
+    --sidebar-border: 35 25% 70%; /* Darker Border for Sidebar (#C4BCB3) */
+    --sidebar-ring: 0 45% 45%; /* Brighter Primary Red */
   }
 }
 

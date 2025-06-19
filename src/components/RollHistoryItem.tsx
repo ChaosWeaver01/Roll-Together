@@ -13,13 +13,13 @@ interface RollHistoryItemProps {
 const getOutcomeStyles = (outcome: RollOutcomeState): string => {
   switch (outcome) {
     case 'botch':
-      return 'text-destructive font-bold';
+      return 'text-destructive font-bold'; // Uses theme's destructive color
     case 'failure':
-      return 'text-orange-700 font-semibold'; 
+      return 'text-orange-700 font-semibold'; // Dark orange/rust, good contrast on parchment
     case 'critical':
-      return 'text-green-800 font-bold'; 
+      return 'text-green-700 font-bold'; // Deep forest green
     case 'trueCritical':
-      return 'text-yellow-900 font-extrabold animate-pulse'; 
+      return 'text-amber-700 font-extrabold animate-pulse'; // Dark, rich amber/gold
     default:
       return 'text-foreground';
   }
@@ -30,11 +30,11 @@ const OutcomeIcon = ({ outcome }: { outcome: RollOutcomeState }) => {
     case 'botch':
       return <ShieldAlert className="w-4 h-4 mr-1.5 text-destructive" />;
     case 'failure':
-      return <AlertTriangle className="w-4 h-4 mr-1.5 text-orange-700" />; 
+      return <AlertTriangle className="w-4 h-4 mr-1.5 text-orange-700" />;
     case 'critical':
-      return <Award className="w-4 h-4 mr-1.5 text-green-800" />; 
+      return <Award className="w-4 h-4 mr-1.5 text-green-700" />;
     case 'trueCritical':
-      return <Sparkles className="w-4 h-4 mr-1.5 text-yellow-900" />; 
+      return <Sparkles className="w-4 h-4 mr-1.5 text-amber-700" />;
     default:
       return null;
   }
@@ -142,12 +142,12 @@ export function RollHistoryItem({ roll }: RollHistoryItemProps) {
             </div>
             <div className="flex flex-wrap items-center gap-2 mt-3">
               {genericRoll.results.map((dieRoll, index) => (
-                <div 
-                  key={index} 
+                <div
+                  key={index}
                   className="relative flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 border-2 border-muted-foreground rounded-lg text-sm sm:text-base font-bold shadow-md bg-card text-foreground"
                   aria-label={`${dieRoll.dieType}: ${dieRoll.value}`}
                 >
-                  {/* Removed span: <span className="text-xs absolute -top-1 -right-1 bg-primary/80 text-primary-foreground px-0.5 rounded-sm">{dieRoll.dieType.substring(1)}</span> */}
+
                   {dieRoll.value}
                 </div>
               ))}
@@ -171,4 +171,3 @@ export function RollHistoryItem({ roll }: RollHistoryItemProps) {
     </li>
   );
 }
-
