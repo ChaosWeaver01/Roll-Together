@@ -2,7 +2,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from 'react';
-import { Share2, ClipboardCopy, Home, Trash2, Swords } from 'lucide-react';
+import { Share2, ClipboardCopy, Home, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useRoomSync } from '@/hooks/useRoomSync';
 import { PlayerInput } from '@/components/PlayerInput';
@@ -102,11 +102,11 @@ export function RoomClient({ roomId }: RoomClientProps) {
       <SidebarInset>
         <div className="flex flex-col min-h-screen">
           <div className="container mx-auto py-8 px-4 flex flex-col grow">
-            <header className="mb-8 text-center">
-              <h1 className="font-headline text-4xl sm:text-5xl text-primary mb-2">
+            <header className="mb-8 flex flex-col sm:flex-row items-center justify-between gap-4 sm:gap-6">
+              <h1 className="font-headline text-xl sm:text-2xl text-primary whitespace-nowrap">
                 Room: <span className="text-accent font-code">{roomId}</span>
               </h1>
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-2 mt-4">
+              <div className="flex flex-wrap items-center justify-center sm:justify-end gap-2">
                 <Button variant="outline" onClick={copyRoomUrl} aria-label="Copy room URL to clipboard">
                   <ClipboardCopy className="w-4 h-4 mr-2" /> Copy Link
                 </Button>
