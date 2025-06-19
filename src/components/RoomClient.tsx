@@ -33,7 +33,7 @@ export function RoomClient({ roomId }: RoomClientProps) {
   const { toast } = useToast();
   const [roomUrl, setRoomUrl] = useState('');
 
-  const [isLeftPanelOpen, setIsLeftPanelOpen] = useState(true);
+  const [isLeftPanelOpen, setIsLeftPanelOpen] = useState(false);
   const [isRightPanelOpen, setIsRightPanelOpen] = useState(false); 
 
   const [isCreateMacroDialogOpen, setIsCreateMacroDialogOpen] = useState(false);
@@ -52,7 +52,7 @@ export function RoomClient({ roomId }: RoomClientProps) {
       if (storedPanelStates) {
         try {
           const { leftOpen, rightOpen } = JSON.parse(storedPanelStates);
-          setIsLeftPanelOpen(leftOpen !== undefined ? leftOpen : true);
+          setIsLeftPanelOpen(leftOpen !== undefined ? leftOpen : false);
           setIsRightPanelOpen(rightOpen !== undefined ? rightOpen : false);
         } catch (e) {
           console.error("Failed to parse panel states from localStorage", e);
@@ -225,11 +225,11 @@ export function RoomClient({ roomId }: RoomClientProps) {
     }
 
     if (macroToExecute.macroType === 'skill') {
-      const { diceCount, modifier, criticalThreshold, isCombatRoll } = macroToExecute;
+      const { diceCount, modifier, criticalThreshold, isCombatRoll } = macroToExecute as SkillRoll; // Type assertion
       handleSkillRoll(diceCount, modifier, criticalThreshold, isCombatRoll);
       toast({ title: "Skill Macro Executed", description: `Rolled "${macroToExecute.name}".`});
     } else if (macroToExecute.macroType === 'generic') {
-      const { selectedDice, modifier } = macroToExecute;
+      const { selectedDice, modifier } = macroToExecute as GenericRoll; // Type assertion
       handleGenericRoll(selectedDice, modifier);
       toast({ title: "Generic Macro Executed", description: `Rolled "${macroToExecute.name}".`});
     }
@@ -395,3 +395,4 @@ export function RoomClient({ roomId }: RoomClientProps) {
     </div>
   );
 }
+
