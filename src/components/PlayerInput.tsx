@@ -88,7 +88,7 @@ export function PlayerInput({ initialNickname, onRoll }: PlayerInputProps) {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="space-y-2">
             <Label htmlFor="skill-rank" className="flex items-center text-muted-foreground">
-              <TrendingUp className="w-4 h-4 mr-2" /> Skill Rank (1-9)
+              <TrendingUp className="w-4 h-4 mr-2" /> Skill Rank
             </Label>
             <Input
               id="skill-rank"
