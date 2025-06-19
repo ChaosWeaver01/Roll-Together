@@ -2,7 +2,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from 'react';
-import { Share2, ClipboardCopy, Home, Trash2, User, PanelLeft, PanelRight, Settings2, History } from 'lucide-react';
+import { Share2, ClipboardCopy, Home, Trash2, User, PanelLeft, PanelRight, Settings2, History, PlusCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -155,6 +155,14 @@ export function RoomClient({ roomId }: RoomClientProps) {
     });
   };
 
+  const handleAddPreconfiguredRoll = () => {
+    // Placeholder for future functionality
+    toast({
+        title: "Coming Soon!",
+        description: "Ability to add and manage preconfigured dice roll macros.",
+    });
+  };
+
   return (
     <div className="flex flex-col min-h-screen bg-background">
       {/* Header */}
@@ -265,13 +273,12 @@ export function RoomClient({ roomId }: RoomClientProps) {
                   Macros Panel
                 </CardTitle>
               </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground">Room ID: <span className="font-mono text-accent">{roomId}</span></p>
-                <p className="mt-4 text-sm">This panel can be used for settings, player lists, or other contextual information in the future.</p>
-                <div className="mt-6">
-                  <Label htmlFor="current-nickname-display">Your Nickname:</Label>
-                  <Input id="current-nickname-display" value={currentNickname} readOnly className="mt-1 bg-input"/>
-                </div>
+              <CardContent className="space-y-4">
+                <Button onClick={handleAddPreconfiguredRoll} className="w-full">
+                  <PlusCircle className="w-4 h-4 mr-2" />
+                  Add Preconfigured Dice Roll
+                </Button>
+                {/* Additional UI for listing/managing macros will go here */}
               </CardContent>
             </Card>
           )}
@@ -280,4 +287,3 @@ export function RoomClient({ roomId }: RoomClientProps) {
     </div>
   );
 }
-
