@@ -4,6 +4,7 @@ import { Dice } from '@/components/Dice';
 import { formatDistanceToNow } from 'date-fns';
 import { User, Info, BarChart3, AlertTriangle, Zap, ShieldAlert, Award, Sparkles } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { calculateRollTotal } from '@/lib/diceRoller';
 
 interface RollHistoryItemProps {
   roll: Roll;
@@ -51,6 +52,7 @@ const formatOutcomeText = (outcome: RollOutcomeState): string => {
 
 export function RollHistoryItem({ roll }: RollHistoryItemProps) {
   const timeAgo = formatDistanceToNow(new Date(roll.timestamp), { addSuffix: true });
+  const totalRollValue = calculateRollTotal(roll);
 
   return (
     <li className="bg-card p-4 rounded-lg shadow-md border border-border animate-new-roll-entry">
@@ -59,7 +61,16 @@ export function RollHistoryItem({ roll }: RollHistoryItemProps) {
           <User className="w-5 h-5 mr-2 text-primary" />
           <span className="font-semibold text-lg text-primary">{roll.rollerNickname || 'Anonymous'}</span>
         </div>
-        <span className="text-xs text-muted-foreground">{timeAgo}</span>
+        
+        <div className="flex items-baseline gap-x-2 sm:gap-x-3">
+          <span className="text-xs text-muted-foreground">{timeAgo}</span>
+          <span 
+            className="text-2xl font-bold text-accent" 
+            aria-label={`Total roll value: ${totalRollValue}`}
+          >
+            {totalRollValue}
+          </span>
+        </div>
       </div>
       
       <div className="mb-3">
