@@ -51,15 +51,25 @@ export function PlayerInput({ onRoll }: PlayerInputProps) {
 
   return (
     <Card className="w-full shadow-lg">
-      <CardHeader>
+      <CardHeader className="flex flex-row items-center justify-between">
         <CardTitle className="font-headline text-2xl flex items-center">
           <Dices className="w-6 h-6 mr-2 text-primary" />
           Skill Roller
         </CardTitle>
+        <div className="flex items-center space-x-2">
+            <Switch
+              id="combat-roll-toggle"
+              checked={isCombatRoll}
+              onCheckedChange={setIsCombatRoll}
+              aria-label="Toggle Combat Roll"
+            />
+            <Label htmlFor="combat-roll-toggle" className="flex items-center text-muted-foreground">
+              <Swords className="w-4 h-4 mr-2" /> Combat Roll
+            </Label>
+          </div>
       </CardHeader>
       <CardContent className="space-y-6">
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div className="space-y-2">
+        <div className="space-y-2">
             <Label htmlFor="dice-count" className="flex items-center text-muted-foreground">
               <TrendingUp className="w-4 h-4 mr-2" /> Dice (0-9)
             </Label>
@@ -72,20 +82,8 @@ export function PlayerInput({ onRoll }: PlayerInputProps) {
               max="9"
               className="bg-input placeholder:text-muted-foreground"
             />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="modifier" className="flex items-center text-muted-foreground">
-              <Plus className="w-4 h-4 mr-2" /> Modifier
-            </Label>
-            <Input
-              id="modifier"
-              type="number"
-              value={modifier}
-              onChange={(e) => setModifier(parseInt(e.target.value, 10) || 0)}
-              className="bg-input placeholder:text-muted-foreground"
-            />
-          </div>
         </div>
+        
         <div className="space-y-2">
             <Label htmlFor="critical-threshold" className="flex items-center text-muted-foreground">
               <Zap className="w-4 h-4 mr-2" /> Critical Threshold (1-10)
@@ -100,17 +98,19 @@ export function PlayerInput({ onRoll }: PlayerInputProps) {
               className="bg-input placeholder:text-muted-foreground"
             />
         </div>
-        <div className="flex items-center justify-between space-x-4">
-          <div className="flex items-center space-x-2">
-            <Switch
-              id="combat-roll-toggle"
-              checked={isCombatRoll}
-              onCheckedChange={setIsCombatRoll}
-              aria-label="Toggle Combat Roll"
-            />
-            <Label htmlFor="combat-roll-toggle" className="flex items-center text-muted-foreground">
-              <Swords className="w-4 h-4 mr-2" /> Combat Roll
+
+        <div className="flex items-end space-x-4">
+          <div className="flex-grow space-y-2">
+            <Label htmlFor="modifier" className="flex items-center text-muted-foreground">
+              <Plus className="w-4 h-4 mr-2" /> Modifier
             </Label>
+            <Input
+              id="modifier"
+              type="number"
+              value={modifier}
+              onChange={(e) => setModifier(parseInt(e.target.value, 10) || 0)}
+              className="bg-input placeholder:text-muted-foreground"
+            />
           </div>
           <Button
             onClick={handleRoll}
