@@ -13,7 +13,7 @@ import { performSkillRoll, performGenericRoll, determineRollOutcome } from '@/li
 import { generateId, cn } from '@/lib/utils';
 import type { Roll, SkillRoll, GenericRoll, SkillDieRoll, GenericDieRoll } from '@/types/room';
 import { useToast } from "@/hooks/use-toast";
-import { useRoomSync } from '@/hooks/useRoomSync'; // Added import
+import { useRoomSync } from '@/hooks/useRoomSync';
 import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
@@ -262,7 +262,7 @@ export function RoomClient({ roomId }: RoomClientProps) {
               <CardHeader>
                 <CardTitle className="font-headline text-2xl flex items-center text-primary">
                   <Settings2 className="w-6 h-6 mr-2" />
-                  Details Panel
+                  Macros Panel
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -280,3 +280,4 @@ export function RoomClient({ roomId }: RoomClientProps) {
     </div>
   );
 }
+
