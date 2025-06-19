@@ -267,18 +267,19 @@ export function RoomClient({ roomId }: RoomClientProps) {
         >
           {isRightPanelOpen && (
             <Card className="bg-card text-card-foreground shadow-xl h-full">
-              <CardHeader>
+              <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle className="font-headline text-2xl flex items-center text-primary">
                   <Settings2 className="w-6 h-6 mr-2" />
                   Macros Panel
                 </CardTitle>
+                <Button onClick={handleAddPreconfiguredRoll} variant="outline" size="sm">
+                  <PlusCircle className="w-4 h-4 mr-2" />
+                  Add Roll
+                </Button>
               </CardHeader>
               <CardContent className="space-y-4">
-                <Button onClick={handleAddPreconfiguredRoll} className="w-full">
-                  <PlusCircle className="w-4 h-4 mr-2" />
-                  Add Preconfigured Dice Roll
-                </Button>
                 {/* Additional UI for listing/managing macros will go here */}
+                {/* Example: <p className="text-sm text-muted-foreground">No macros configured yet.</p> */}
               </CardContent>
             </Card>
           )}
