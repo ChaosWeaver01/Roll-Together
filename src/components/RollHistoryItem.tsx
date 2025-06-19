@@ -64,17 +64,12 @@ export function RollHistoryItem({ roll }: RollHistoryItemProps) {
         
         <div className="flex items-baseline gap-x-2 sm:gap-x-3">
           <span className="text-xs text-muted-foreground">{timeAgo}</span>
-          <span 
-            className="text-2xl font-bold text-accent" 
-            aria-label={`Total roll value: ${totalRollValue}`}
-          >
-            {totalRollValue}
-          </span>
+          {/* Total roll value removed from here */}
         </div>
       </div>
       
       <div className="mb-3">
-        <div className={cn("flex items-center text-lg mb-2", getOutcomeStyles(roll.rollOutcomeState))}>
+        <div className={cn("flex items-center text-lg mb-1", getOutcomeStyles(roll.rollOutcomeState))}>
           <OutcomeIcon outcome={roll.rollOutcomeState} />
           <span>{formatOutcomeText(roll.rollOutcomeState)}</span>
         </div>
@@ -98,10 +93,19 @@ export function RollHistoryItem({ roll }: RollHistoryItemProps) {
         </div>
       </div>
 
-      <div className="flex flex-wrap gap-2">
+      <div className="flex flex-wrap items-center gap-2 mt-3">
         {roll.results.map((dieRoll, index) => (
           <Dice key={index} roll={dieRoll} />
         ))}
+        {/* Adding a visual separator like an equals sign */}
+        <span className="text-xl sm:text-2xl font-bold text-muted-foreground mx-1">=</span>
+        {/* Total value displayed here */}
+        <span 
+          className="text-xl sm:text-2xl font-bold text-accent" 
+          aria-label={`Total roll value: ${totalRollValue}`}
+        >
+          {totalRollValue}
+        </span>
       </div>
     </li>
   );
