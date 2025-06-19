@@ -33,7 +33,7 @@ export function RoomClient({ roomId }: RoomClientProps) {
   const { toast } = useToast();
   const [roomUrl, setRoomUrl] = useState('');
 
-  const [isLeftPanelOpen, setIsLeftPanelOpen] = useState(false);
+  const [isLeftPanelOpen, setIsLeftPanelOpen] = useState(true); // Default left panel to open
   const [isRightPanelOpen, setIsRightPanelOpen] = useState(false); 
 
   const [isCreateMacroDialogOpen, setIsCreateMacroDialogOpen] = useState(false);
@@ -52,16 +52,16 @@ export function RoomClient({ roomId }: RoomClientProps) {
       if (storedPanelStates) {
         try {
           const { leftOpen, rightOpen } = JSON.parse(storedPanelStates);
-          setIsLeftPanelOpen(leftOpen !== undefined ? leftOpen : false);
-          setIsRightPanelOpen(rightOpen !== undefined ? rightOpen : false);
+          setIsLeftPanelOpen(leftOpen !== undefined ? leftOpen : true); // Default to true if not found
+          setIsRightPanelOpen(rightOpen !== undefined ? rightOpen : false); // Default to false if not found
         } catch (e) {
           console.error("Failed to parse panel states from localStorage", e);
-          setIsLeftPanelOpen(false); // Default to closed on error
-          setIsRightPanelOpen(false); // Default to closed on error
+          setIsLeftPanelOpen(true); // Default to true on error
+          setIsRightPanelOpen(false); // Default to false on error
         }
       } else {
-        // Default to closed if no stored state
-        setIsLeftPanelOpen(false);
+        // Default states if no stored state
+        setIsLeftPanelOpen(true);
         setIsRightPanelOpen(false);
       }
 
@@ -271,7 +271,7 @@ export function RoomClient({ roomId }: RoomClientProps) {
                 <Home className="w-4 h-4 mr-2" /> Home
               </Link>
             </Button>
-            <h1 className="font-headline text-xl sm:text-2xl text-primary whitespace-nowrap">
+             <h1 className="font-headline text-xl sm:text-2xl text-primary whitespace-nowrap">
               Room: <span className="text-accent font-code">{roomId}</span>
             </h1>
           </div>
