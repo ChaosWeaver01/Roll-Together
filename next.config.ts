@@ -1,12 +1,14 @@
 
 import type {NextConfig} from 'next';
 
+const isGithubPages = process.env.NEXT_PUBLIC_GITHUB_PAGES === 'true';
+const repoName = 'Roll-Together'; // Your repository name
+
 const nextConfig: NextConfig = {
   output: 'export', // Enable static HTML export
-  // If your site is hosted at a subpath, e.g., https://your-username.github.io/your-repo-name/
-  // Uncomment and set the basePath and assetPrefix below.
-  basePath: '/Roll-Together',
-  assetPrefix: '/Roll-Together/', // Note the trailing slash for assetPrefix
+  // Conditionally set basePath and assetPrefix for GitHub Pages
+  basePath: isGithubPages ? `/${repoName}` : '',
+  assetPrefix: isGithubPages ? `/${repoName}/` : '',
   typescript: {
     ignoreBuildErrors: true,
   },
