@@ -100,25 +100,27 @@ export function PlayerInput({ onRoll }: PlayerInputProps) {
               className="bg-input placeholder:text-muted-foreground"
             />
         </div>
-        <div className="flex items-center space-x-2">
-          <Switch
-            id="combat-roll-toggle"
-            checked={isCombatRoll}
-            onCheckedChange={setIsCombatRoll}
-            aria-label="Toggle Combat Roll"
-          />
-          <Label htmlFor="combat-roll-toggle" className="flex items-center text-muted-foreground">
-            <Swords className="w-4 h-4 mr-2" /> Combat Roll
-          </Label>
+        <div className="flex items-center justify-between space-x-4">
+          <div className="flex items-center space-x-2">
+            <Switch
+              id="combat-roll-toggle"
+              checked={isCombatRoll}
+              onCheckedChange={setIsCombatRoll}
+              aria-label="Toggle Combat Roll"
+            />
+            <Label htmlFor="combat-roll-toggle" className="flex items-center text-muted-foreground">
+              <Swords className="w-4 h-4 mr-2" /> Combat Roll
+            </Label>
+          </div>
+          <Button
+            onClick={handleRoll}
+            className="bg-accent hover:bg-accent/90 text-accent-foreground text-base py-2 px-6 rounded-lg shadow-md transition-transform hover:scale-105"
+            aria-label="Roll the skill dice"
+          >
+            <Dices className="mr-2 h-5 w-5" />
+            Roll
+          </Button>
         </div>
-        <Button
-          onClick={handleRoll}
-          className="w-full bg-accent hover:bg-accent/90 text-accent-foreground text-lg py-6 rounded-lg shadow-lg transition-transform hover:scale-105"
-          aria-label="Roll the dice"
-        >
-          <Dices className="mr-2 h-6 w-6" />
-          Roll Skill Dice!
-        </Button>
       </CardContent>
     </Card>
   );
