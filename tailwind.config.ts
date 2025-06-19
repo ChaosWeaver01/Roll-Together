@@ -10,9 +10,9 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        body: ['Inter', 'sans-serif'],
-        headline: ['Inter', 'sans-serif'],
-        code: ['monospace'],
+        body: ['PT Sans', 'sans-serif'],
+        headline: ['Playfair Display', 'serif'],
+        code: ['Source Code Pro', 'monospace'],
       },
       colors: {
         background: 'hsl(var(--background))',
@@ -88,10 +88,23 @@ export default {
             height: '0',
           },
         },
+        'roll-dice-animation': {
+          '0%': { transform: 'scale(1) rotate(0deg)', opacity: '0.5' },
+          '25%': { transform: 'scale(1.1) rotate(5deg)', opacity: '0.75' },
+          '50%': { transform: 'scale(1) rotate(-5deg)', opacity: '1' },
+          '75%': { transform: 'scale(1.1) rotate(0deg)', opacity: '0.75' },
+          '100%': { transform: 'scale(1) rotate(0deg)', opacity: '1' },
+        },
+        'new-roll-entry-animation': {
+          from: { opacity: '0', transform: 'translateY(20px)' },
+          to: { opacity: '1', transform: 'translateY(0)' },
+        }
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
+        'roll-dice': 'roll-dice-animation 0.5s ease-out',
+        'new-roll-entry': 'new-roll-entry-animation 0.3s ease-out forwards',
       },
     },
   },
