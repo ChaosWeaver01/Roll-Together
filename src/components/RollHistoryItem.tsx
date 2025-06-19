@@ -15,11 +15,11 @@ const getOutcomeStyles = (outcome: RollOutcomeState): string => {
     case 'botch':
       return 'text-destructive font-bold';
     case 'failure':
-      return 'text-orange-400 font-semibold';
+      return 'text-orange-400 font-semibold'; // Consider theming this or ensuring orange-400 has AAA against card BG
     case 'critical':
-      return 'text-green-400 font-bold';
+      return 'text-green-400 font-bold'; // Consider theming this or ensuring green-400 has AAA
     case 'trueCritical':
-      return 'text-yellow-400 font-extrabold animate-pulse';
+      return 'text-yellow-400 font-extrabold animate-pulse'; // Consider theming this or ensuring yellow-400 has AAA
     default:
       return 'text-foreground';
   }
@@ -30,11 +30,11 @@ const OutcomeIcon = ({ outcome }: { outcome: RollOutcomeState }) => {
     case 'botch':
       return <ShieldAlert className="w-4 h-4 mr-1.5 text-destructive" />;
     case 'failure':
-      return <AlertTriangle className="w-4 h-4 mr-1.5 text-orange-400" />;
+      return <AlertTriangle className="w-4 h-4 mr-1.5 text-orange-400" />; // Theme this
     case 'critical':
-      return <Award className="w-4 h-4 mr-1.5 text-green-400" />;
+      return <Award className="w-4 h-4 mr-1.5 text-green-400" />; // Theme this
     case 'trueCritical':
-      return <Sparkles className="w-4 h-4 mr-1.5 text-yellow-400" />;
+      return <Sparkles className="w-4 h-4 mr-1.5 text-yellow-400" />; // Theme this
     default:
       return null;
   }
@@ -82,7 +82,7 @@ export function RollHistoryItem({ roll }: RollHistoryItemProps) {
               <div className={cn("flex items-center text-lg", getOutcomeStyles(skillRoll.rollOutcomeState))}>
                 <OutcomeIcon outcome={skillRoll.rollOutcomeState} />
                 <span>{formatOutcomeText(skillRoll.rollOutcomeState, skillRoll.isCombatRoll)}</span>
-                {skillRoll.isCombatRoll && <Swords className="w-4 h-4 ml-2 text-red-500" />}
+                {skillRoll.isCombatRoll && <Swords className="w-4 h-4 ml-2 text-destructive" />}
               </div>
               <div className="flex flex-wrap gap-x-3 gap-y-1 text-sm text-muted-foreground items-baseline">
                 <div className="flex items-center bg-background/50 px-2 py-1 rounded">
