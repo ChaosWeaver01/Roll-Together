@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect, useCallback } from 'react';
@@ -78,5 +79,19 @@ export function useRoomSync(roomId: string) {
     });
   }, [roomId, channel, isMounted]);
 
-  return { rolls, addRoll };
+  const clearAllRolls = useCallback(() => {
+    if (!isMounted) return;
+    const emptyRolls: Roll[] = [];
+    setRolls(emptyRolls); // Update local state for the current tab
+    try {
+      localStorage.setItem(getLocalStorageKey(roomId), JSON.stringify(emptyRolls));
+      if (channel) {
+        channel.postMessage(emptyRolls); // Broadcast to other tabs
+      }
+    } catch (error) {
+      console.error("Failed to clear or broadcast rolls:", error);
+    }
+  }, [roomId, channel, isMounted]);
+
+  return { rolls, addRoll, clearAllRolls };
 }

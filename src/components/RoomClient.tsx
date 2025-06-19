@@ -2,7 +2,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from 'react';
-import { Share2, ClipboardCopy, Home } from 'lucide-react';
+import { Share2, ClipboardCopy, Home, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useRoomSync } from '@/hooks/useRoomSync';
 import { PlayerInput } from '@/components/PlayerInput';
@@ -18,7 +18,7 @@ interface RoomClientProps {
 }
 
 export function RoomClient({ roomId }: RoomClientProps) {
-  const { rolls, addRoll } = useRoomSync(roomId);
+  const { rolls, addRoll, clearAllRolls } = useRoomSync(roomId);
   const [initialNickname, setInitialNickname] = useState('');
   const { toast } = useToast();
   const [roomUrl, setRoomUrl] = useState('');
@@ -69,6 +69,14 @@ export function RoomClient({ roomId }: RoomClientProps) {
       });
   };
 
+  const handleClearHistory = () => {
+    clearAllRolls();
+    toast({
+      title: "History Cleared",
+      description: "The roll history for this room has been cleared.",
+    });
+  };
+
   return (
     <div className="container mx-auto py-8 px-4 flex flex-col grow">
       <header className="mb-8 text-center">
@@ -104,7 +112,12 @@ export function RoomClient({ roomId }: RoomClientProps) {
           <PlayerInput initialNickname={initialNickname} onRoll={handleRoll} />
         </div>
         <div className="lg:col-span-2 bg-card/50 p-6 rounded-xl shadow-xl border border-border">
-           <h2 className="font-headline text-3xl text-primary mb-6">Roll History</h2>
+           <div className="flex justify-between items-center mb-6">
+            <h2 className="font-headline text-3xl text-primary">Roll History</h2>
+            <Button variant="outline" onClick={handleClearHistory} aria-label="Clear roll history">
+              <Trash2 className="w-4 h-4 mr-2" /> Clear History
+            </Button>
+          </div>
           <RollHistory rolls={rolls} />
         </div>
       </div>
