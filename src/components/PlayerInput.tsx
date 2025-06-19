@@ -6,26 +6,20 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Dices, User, TrendingUp, Plus, Zap, Swords } from 'lucide-react';
+import { Dices, TrendingUp, Plus, Zap, Swords } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
 import { Switch } from "@/components/ui/switch";
 
 interface PlayerInputProps {
-  initialNickname: string;
-  onRoll: (nickname: string, diceCount: number, modifier: number, criticalThreshold: number, isCombatRoll: boolean) => void;
+  onRoll: (diceCount: number, modifier: number, criticalThreshold: number, isCombatRoll: boolean) => void;
 }
 
-export function PlayerInput({ initialNickname, onRoll }: PlayerInputProps) {
-  const [nickname, setNickname] = useState(initialNickname);
+export function PlayerInput({ onRoll }: PlayerInputProps) {
   const [diceCount, setDiceCount] = useState(1);
   const [modifier, setModifier] = useState(0);
   const [criticalThreshold, setCriticalThreshold] = useState(9);
   const [isCombatRoll, setIsCombatRoll] = useState(false);
   const { toast } = useToast();
-
-  useEffect(() => {
-    setNickname(initialNickname);
-  }, [initialNickname]);
 
   const handleDiceCountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let value = parseInt(e.target.value, 10);
@@ -36,15 +30,7 @@ export function PlayerInput({ initialNickname, onRoll }: PlayerInputProps) {
   };
 
   const handleRoll = () => {
-    if (nickname.trim() === '') {
-      toast({
-        title: "Nickname Required",
-        description: "Please enter a nickname before rolling.",
-        variant: "destructive",
-      });
-      return;
-    }
-    if (diceCount < 0 || diceCount > 9) { // Allow 0 for diceCount for specific skill roll logic
+    if (diceCount < 0 || diceCount > 9) {
        toast({
         title: "Invalid Dice Input",
         description: "Dice input value must be between 0 and 9.",
@@ -60,7 +46,7 @@ export function PlayerInput({ initialNickname, onRoll }: PlayerInputProps) {
       });
       return;
     }
-    onRoll(nickname, diceCount, modifier, criticalThreshold, isCombatRoll);
+    onRoll(diceCount, modifier, criticalThreshold, isCombatRoll);
   };
 
   return (
@@ -72,19 +58,6 @@ export function PlayerInput({ initialNickname, onRoll }: PlayerInputProps) {
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-6">
-        <div className="space-y-2">
-          <Label htmlFor="player-nickname" className="flex items-center text-muted-foreground">
-            <User className="w-4 h-4 mr-2" /> Nickname
-          </Label>
-          <Input
-            id="player-nickname"
-            type="text"
-            placeholder="Enter your nickname"
-            value={nickname}
-            onChange={(e) => setNickname(e.target.value)}
-            className="bg-input placeholder:text-muted-foreground"
-          />
-        </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="space-y-2">
             <Label htmlFor="dice-count" className="flex items-center text-muted-foreground">

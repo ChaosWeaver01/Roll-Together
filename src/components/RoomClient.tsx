@@ -2,8 +2,10 @@
 "use client";
 
 import { useState, useEffect, useCallback } from 'react';
-import { Share2, ClipboardCopy, Home, Trash2 } from 'lucide-react';
+import { Share2, ClipboardCopy, Home, Trash2, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { useRoomSync } from '@/hooks/useRoomSync';
 import { PlayerInput } from '@/components/PlayerInput';
 import { GenericDiceRoller } from '@/components/GenericDiceRoller';
@@ -27,19 +29,39 @@ interface RoomClientProps {
 
 export function RoomClient({ roomId }: RoomClientProps) {
   const { rolls, addRoll, clearAllRolls } = useRoomSync(roomId);
-  const [initialNickname, setInitialNickname] = useState('');
+  const [currentNickname, setCurrentNickname] = useState('');
   const { toast } = useToast();
   const [roomUrl, setRoomUrl] = useState('');
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const storedNickname = localStorage.getItem('rt-nickname') || `Player${generateId().substring(0,4)}`;
-      setInitialNickname(storedNickname);
+      setCurrentNickname(storedNickname);
       setRoomUrl(window.location.href);
     }
   }, []);
 
-  const handleSkillRoll = useCallback((nickname: string, diceCount: number, modifier: number, criticalThreshold: number, isCombatRoll: boolean) => {
+  const handleNicknameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const newNickname = event.target.value;
+    setCurrentNickname(newNickname);
+    if (newNickname.trim()) {
+      localStorage.setItem('rt-nickname', newNickname.trim());
+    } else {
+      localStorage.removeItem('rt-nickname'); // Or set to a default
+    }
+  };
+
+  const handleSkillRoll = useCallback((diceCount: number, modifier: number, criticalThreshold: number, isCombatRoll: boolean) => {
+    const nicknameToUse = currentNickname.trim() || `Player${generateId().substring(0,4)}`;
+    if (!nicknameToUse.trim()) {
+      toast({
+        title: "Nickname Required",
+        description: "Please enter a nickname in the header before rolling.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     const results: SkillDieRoll[] = performSkillRoll(diceCount);
     const rollOutcomeState = determineRollOutcome(results, criticalThreshold);
     
@@ -47,30 +69,37 @@ export function RoomClient({ roomId }: RoomClientProps) {
       id: generateId(),
       rollType: 'skill',
       roomId,
-      rollerNickname: nickname,
+      rollerNickname: nicknameToUse,
       timestamp: Date.now(),
-      diceCount, // This is the input diceCount for skill roller logic
+      diceCount,
       modifier,
       results,
-      totalDiceRolled: results.length, // Actual number of D10s rolled
+      totalDiceRolled: results.length,
       criticalThreshold,
       rollOutcomeState,
       isCombatRoll,
     };
     addRoll(newRoll);
-    if (nickname.trim()) {
-      localStorage.setItem('rt-nickname', nickname.trim());
-    }
-  }, [roomId, addRoll]);
+  }, [roomId, addRoll, currentNickname, toast]);
 
-  const handleGenericRoll = useCallback((nickname: string, diceRequests: Array<{ dieType: string; count: number }>, modifier: number) => {
+  const handleGenericRoll = useCallback((diceRequests: Array<{ dieType: string; count: number }>, modifier: number) => {
+    const nicknameToUse = currentNickname.trim() || `Player${generateId().substring(0,4)}`;
+     if (!nicknameToUse.trim()) {
+      toast({
+        title: "Nickname Required",
+        description: "Please enter a nickname in the header before rolling.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
     const results: GenericDieRoll[] = performGenericRoll(diceRequests);
     
     const newRoll: GenericRoll = {
       id: generateId(),
       rollType: 'generic',
       roomId,
-      rollerNickname: nickname,
+      rollerNickname: nicknameToUse,
       timestamp: Date.now(),
       diceRequests,
       modifier,
@@ -78,10 +107,7 @@ export function RoomClient({ roomId }: RoomClientProps) {
       totalDiceRolled: results.length,
     };
     addRoll(newRoll);
-     if (nickname.trim()) {
-      localStorage.setItem('rt-nickname', nickname.trim());
-    }
-  }, [roomId, addRoll]);
+  }, [roomId, addRoll, currentNickname, toast]);
 
 
   const copyRoomUrl = () => {
@@ -114,8 +140,8 @@ export function RoomClient({ roomId }: RoomClientProps) {
     <SidebarProvider defaultOpen={true}>
       <Sidebar side="left" collapsible="icon" className="border-r bg-card">
         <SidebarContent className="p-4 space-y-4">
-          <PlayerInput initialNickname={initialNickname} onRoll={handleSkillRoll} />
-          <GenericDiceRoller initialNickname={initialNickname} onRoll={handleGenericRoll} />
+          <PlayerInput onRoll={handleSkillRoll} />
+          <GenericDiceRoller onRoll={handleGenericRoll} />
         </SidebarContent>
       </Sidebar>
 
@@ -126,27 +152,42 @@ export function RoomClient({ roomId }: RoomClientProps) {
               <h1 className="font-headline text-xl sm:text-2xl text-primary whitespace-nowrap">
                 Room: <span className="text-accent font-code">{roomId}</span>
               </h1>
-              <div className="flex flex-wrap items-center justify-center sm:justify-end gap-2">
-                <Button variant="outline" onClick={copyRoomUrl} aria-label="Copy room URL to clipboard">
-                  <ClipboardCopy className="w-4 h-4 mr-2" /> Copy Link
-                </Button>
-                {roomUrl && (
-                  <Button variant="outline" asChild>
-                    <a
-                      href={`mailto:?subject=Join my Roll Together room!&body=Let's roll some dice! Join my room: ${roomUrl}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      aria-label="Share room URL via email"
-                    >
-                      <Share2 className="w-4 h-4 mr-2" /> Share via Email
-                    </a>
+              <div className="flex flex-col sm:flex-row items-center gap-x-4 gap-y-2">
+                <div className="flex items-center gap-x-2">
+                  <Label htmlFor="room-nickname" className="text-sm text-muted-foreground whitespace-nowrap flex items-center">
+                    <User className="w-4 h-4 mr-1.5" /> Nickname:
+                  </Label>
+                  <Input
+                    id="room-nickname"
+                    type="text"
+                    placeholder="Enter Nickname"
+                    value={currentNickname}
+                    onChange={handleNicknameChange}
+                    className="bg-input placeholder:text-muted-foreground h-9 sm:w-40 w-full"
+                  />
+                </div>
+                <div className="flex flex-wrap items-center justify-center sm:justify-end gap-2">
+                  <Button variant="outline" onClick={copyRoomUrl} aria-label="Copy room URL to clipboard" size="sm">
+                    <ClipboardCopy className="w-4 h-4 mr-2" /> Copy Link
                   </Button>
-                )}
-                <Button variant="ghost" asChild>
-                  <Link href="/" aria-label="Back to Home">
-                    <Home className="w-4 h-4 mr-2" /> Home
-                  </Link>
-                </Button>
+                  {roomUrl && (
+                    <Button variant="outline" asChild size="sm">
+                      <a
+                        href={`mailto:?subject=Join my Roll Together room!&body=Let's roll some dice! Join my room: ${roomUrl}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label="Share room URL via email"
+                      >
+                        <Share2 className="w-4 h-4 mr-2" /> Share
+                      </a>
+                    </Button>
+                  )}
+                  <Button variant="ghost" asChild size="sm">
+                    <Link href="/" aria-label="Back to Home">
+                      <Home className="w-4 h-4 mr-2" /> Home
+                    </Link>
+                  </Button>
+                </div>
               </div>
             </header>
 

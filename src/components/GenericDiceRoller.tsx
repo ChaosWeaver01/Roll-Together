@@ -6,29 +6,22 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Dices, User, Plus, Minus, RotateCcw } from 'lucide-react';
+import { Dices, Plus, Minus, RotateCcw } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
-import type { GenericDieRoll } from '@/types/room';
 
 interface GenericDiceRollerProps {
-  initialNickname: string;
-  onRoll: (nickname: string, diceRequests: Array<{ dieType: string; count: number }>, modifier: number) => void;
+  onRoll: (diceRequests: Array<{ dieType: string; count: number }>, modifier: number) => void;
 }
 
 const DIE_TYPES = ["d4", "d6", "d8", "d10", "d12", "d20", "d100"] as const;
 type DieType = typeof DIE_TYPES[number];
 
-export function GenericDiceRoller({ initialNickname, onRoll }: GenericDiceRollerProps) {
-  const [nickname, setNickname] = useState(initialNickname);
+export function GenericDiceRoller({ onRoll }: GenericDiceRollerProps) {
   const [diceQuantities, setDiceQuantities] = useState<Record<DieType, number>>(
     DIE_TYPES.reduce((acc, type) => ({ ...acc, [type]: 0 }), {} as Record<DieType, number>)
   );
   const [modifier, setModifier] = useState(0);
   const { toast } = useToast();
-
-  useEffect(() => {
-    setNickname(initialNickname);
-  }, [initialNickname]);
 
   const handleQuantityChange = (dieType: DieType, value: string) => {
     const count = parseInt(value, 10);
@@ -48,15 +41,6 @@ export function GenericDiceRoller({ initialNickname, onRoll }: GenericDiceRoller
   };
 
   const handleRoll = () => {
-    if (nickname.trim() === '') {
-      toast({
-        title: "Nickname Required",
-        description: "Please enter a nickname before rolling.",
-        variant: "destructive",
-      });
-      return;
-    }
-
     const diceRequests = DIE_TYPES.map(dieType => ({
       dieType,
       count: diceQuantities[dieType] || 0,
@@ -70,7 +54,7 @@ export function GenericDiceRoller({ initialNickname, onRoll }: GenericDiceRoller
       });
       return;
     }
-    onRoll(nickname, diceRequests, modifier);
+    onRoll(diceRequests, modifier);
   };
   
   const clearAllDice = () => {
@@ -93,20 +77,6 @@ export function GenericDiceRoller({ initialNickname, onRoll }: GenericDiceRoller
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-6">
-        <div className="space-y-2">
-          <Label htmlFor="generic-nickname" className="flex items-center text-muted-foreground">
-            <User className="w-4 h-4 mr-2" /> Nickname
-          </Label>
-          <Input
-            id="generic-nickname"
-            type="text"
-            placeholder="Enter your nickname"
-            value={nickname}
-            onChange={(e) => setNickname(e.target.value)}
-            className="bg-input placeholder:text-muted-foreground"
-          />
-        </div>
-
         <div className="grid grid-cols-1 gap-y-4 gap-x-2">
           {DIE_TYPES.map(dieType => (
             <div key={dieType} className="space-y-1">
